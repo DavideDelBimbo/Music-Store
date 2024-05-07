@@ -50,6 +50,10 @@ jobs:
       run: mvn surefire-report:report-only site:site -DgenerateReports=false
       working-directory: ${{ env.workdir }}
       if: ${{ always() }}
+    - name: Generate Integration Test Report
+      run: mvn surefire-report:failsafe-report-only site:site -DgenerateReports=false
+      working-directory: ${{ env.workdir }}
+      if: ${{ always() }}
     - name: Archive JUnit Reports
       uses: actions/upload-artifact@v4
       if: ${{ always() }}
