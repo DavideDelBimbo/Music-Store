@@ -24,6 +24,7 @@
     <picocli.version>4.7.5</picocli.version>
 
     <!-- Plugins versions -->
+    <jacoco.version>0.8.12</jacoco.version>
     <build.helper.version>3.5.0</build.helper.version>
     <failsafe.version>2.22.1</failsafe.version>
 
@@ -110,6 +111,29 @@
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>2.8.2</version>
+        </plugin>
+        <!-- JaCoCo plugin for Code Coverage report -->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <!-- Binds by default to the phase "initialize" -->
+                <goal>prepare-agent</goal>
+                <!-- Binds by default to the phase "verify" -->
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <excludes>
+              <!-- Exclude source classes from Code Coverage analysis -->
+              <exclude>**/model/*.*</exclude>
+              <exclude>**/app/**/*.*</exclude>
+            </excludes>
+          </configuration>
         </plugin>
 
         <!-- Site lifecycle -->
@@ -207,4 +231,20 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!-- JaCoCo profile to enable Code Coverage (when -Pjacoco is passed) -->
+    <profile>
+      <id>jacoco</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
