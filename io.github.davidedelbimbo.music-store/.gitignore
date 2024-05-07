@@ -1,0 +1,8 @@
+# Backup files created by editor.
+*~
+
+# Target folder for Maven project.
+/target/
+
+# Failed GUI tests screenshot folder.
+/failed-gui-tests/
