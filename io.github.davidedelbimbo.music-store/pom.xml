@@ -25,6 +25,7 @@
 
     <!-- Plugins versions -->
     <jacoco.version>0.8.12</jacoco.version>
+    <pitest.version>1.16.0</pitest.version>
     <build.helper.version>3.5.0</build.helper.version>
     <failsafe.version>2.22.1</failsafe.version>
 
@@ -135,6 +136,37 @@
             </excludes>
           </configuration>
         </plugin>
+        <!-- Pitest plugin for Mutation Testing report -->
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pitest.version}</version>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <!-- Binds by default to the phase "test" -->
+                <goal>mutationCoverage</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- Target source classes for Mutation Testing analysis -->
+            <targetClasses>
+              <param>${project.groupId}.${project.artifactId}.controller.*</param>
+            </targetClasses>
+            <!-- Target test clases for Mutation Testing analysis -->
+            <targetTests>
+              <param>${project.groupId}.${project.artifactId}.controller.*</param>
+            </targetTests>
+            <!-- Mutators types for Mutation Testing analysis -->
+            <mutators>
+              <mutator>STRONGER</mutator>
+            </mutators>
+            <!-- Threshold to consider Mutation Testing analysis passed -->
+            <mutationThreshold>100</mutationThreshold>
+          </configuration>
+        </plugin>
 
         <!-- Site lifecycle -->
         <plugin>
@@ -242,6 +274,19 @@
             <!-- Configured in pluginManagement -->
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Pitest profile to enable Mutation Testing (when -Ppitest is passed) -->
+    <profile>
+      <id>pitest</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
           </plugin>
         </plugins>
       </build>
