@@ -7,19 +7,72 @@
   <groupId>io.github.davidedelbimbo</groupId>
   <artifactId>music-store</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <properties>
+    <!-- Java version -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+
+    <!-- Dependencies versions -->
+    <junit.version>4.13.2</junit.version>
+    <assertj.swing.version>3.17.1</assertj.swing.version>
+    <mockito.version>4.4.0</mockito.version>
+    <mongodb.version>3.12.14</mongodb.version>
+    <logback.version>1.2.8</logback.version>
+    <picocli.version>4.7.5</picocli.version>
+
+    <!-- Plugins versions -->
+    <jacoco.version>0.8.12</jacoco.version>
+    <coveralls.version>4.3.0</coveralls.version>
+    <jaxb.version>2.3.1</jaxb.version>
+    <pitest.version>1.16.0</pitest.version>
+    <build.helper.version>3.5.0</build.helper.version>
+    <failsafe.version>2.22.1</failsafe.version>
+
+    <!-- System properties -->
+    <skipUT>false</skipUT>
+    <skipIT>false</skipIT>
+    <skipBDD>false</skipBDD>
   </properties>
 
   <dependencies>
+    <!-- Testing dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-swing-junit</artifactId>
+      <version>${assertj.swing.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Application dependencies -->
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>${mongodb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>${picocli.version}</version>
     </dependency>
   </dependencies>
 
@@ -32,6 +85,7 @@
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
+
         <!-- Default lifecycle -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
@@ -44,6 +98,10 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
+          <configuration>
+            <!-- Skip Unit Tests when -DskipUT=true is passed -->
+            <skipTests>${skipUT}</skipTests>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
@@ -57,6 +115,83 @@
           <artifactId>maven-deploy-plugin</artifactId>
           <version>2.8.2</version>
         </plugin>
+        <!-- JaCoCo plugin for Code Coverage report -->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <!-- Binds by default to the phase "initialize" -->
+                <goal>prepare-agent</goal>
+                <!-- Binds by default to the phase "verify" -->
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <excludes>
+              <!-- Exclude source classes from Code Coverage analysis -->
+              <exclude>**/model/*.*</exclude>
+              <exclude>**/app/**/*.*</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <!-- Coveralls plugin for Code Coverage publishing -->
+        <plugin>
+          <groupId>org.eluder.coveralls</groupId>
+          <artifactId>coveralls-maven-plugin</artifactId>
+          <version>${coveralls.version}</version>
+          <dependencies>
+            <!-- Required when using JDK 9 or higher (since javax.xml.bind has been removed from the JDK) -->
+            <dependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Pitest plugin for Mutation Testing report -->
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pitest.version}</version>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <!-- Binds by default to the phase "test" -->
+                <goal>mutationCoverage</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- Target source classes for Mutation Testing analysis -->
+            <targetClasses>
+              <param>${project.groupId}.${project.artifactId}.controller.*</param>
+            </targetClasses>
+            <!-- Target test clases for Mutation Testing analysis -->
+            <targetTests>
+              <param>${project.groupId}.${project.artifactId}.controller.*</param>
+            </targetTests>
+            <!-- Mutators types for Mutation Testing analysis -->
+            <mutators>
+              <mutator>STRONGER</mutator>
+            </mutators>
+            <!-- Threshold to consider Mutation Testing analysis passed -->
+            <mutationThreshold>100</mutationThreshold>
+          </configuration>
+        </plugin>
+
         <!-- Site lifecycle -->
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
@@ -68,5 +203,136 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <!-- Build Helper plugin to add test sources and resources -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build.helper.version}</version>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <!-- Add test sources paths -->
+              <sources>
+                <source>src/it/java</source>
+                <source>src/bdd/java</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-test-resource</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>add-test-resource</goal>
+            </goals>
+            <configuration>
+              <!-- Add test resources paths -->
+              <resources>
+                <resource>
+                  <directory>src/it/resources</directory>
+                  <directory>src/bdd/resources</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- FailSafe plugin to run Integration Tests and BDD Tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${failsafe.version}</version>
+        <executions>
+          <execution>
+            <id>it-tests</id>
+            <goals>
+              <!-- Binds by default to the phase "integration-test" -->
+              <goal>integration-test</goal>
+              <!-- Binds by default to the phase "verify" -->
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <!-- Skip Integration Tests when -DskipIT=true is passed -->
+              <skipTests>${skipIT}</skipTests>
+            </configuration>
+          </execution>
+          <execution>
+            <id>bdd-tests</id>
+            <goals>
+              <!-- Binds by default to the phase "integration-test" -->
+              <goal>integration-test</goal>
+              <!-- Binds by default to the phase "verify" -->
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <!-- Skip BDD Tests when -DskipBDD=true is passed -->
+              <skipTests>${skipBDD}</skipTests>
+              <!-- Exclude Integration Tests classes from BDD Tests -->
+              <excludes>
+                <exclude>**/*IT.java</exclude>
+              </excludes>
+              <!-- Include BDD Tests classes -->
+              <includes>
+                <include>**/*BDD.java</include>	
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
+
+  <profiles>
+    <!-- JaCoCo profile to enable Code Coverage (when -Pjacoco is passed) -->
+    <profile>
+      <id>jacoco</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Coveralls profile to enable Code Coverage publishing (when -Pcoveralls is passed) -->
+    <profile>
+      <id>coveralls</id>
+      <build>
+        <plugins>
+          <!-- JaCoCo report is required by Coveralls Maven plugin -->
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.eluder.coveralls</groupId>
+            <artifactId>coveralls-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Pitest profile to enable Mutation Testing (when -Ppitest is passed) -->
+    <profile>
+      <id>pitest</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
