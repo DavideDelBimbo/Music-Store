@@ -25,6 +25,8 @@
 
     <!-- Plugins versions -->
     <jacoco.version>0.8.12</jacoco.version>
+    <coveralls.version>4.3.0</coveralls.version>
+    <jaxb.version>2.3.1</jaxb.version>
     <pitest.version>1.16.0</pitest.version>
     <build.helper.version>3.5.0</build.helper.version>
     <failsafe.version>2.22.1</failsafe.version>
@@ -135,6 +137,28 @@
               <exclude>**/app/**/*.*</exclude>
             </excludes>
           </configuration>
+        </plugin>
+        <!-- Coveralls plugin for Code Coverage publishing -->
+        <plugin>
+          <groupId>org.eluder.coveralls</groupId>
+          <artifactId>coveralls-maven-plugin</artifactId>
+          <version>${coveralls.version}</version>
+          <dependencies>
+            <!-- Required when using JDK 9 or higher (since javax.xml.bind has been removed from the JDK) -->
+            <dependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <!-- Pitest plugin for Mutation Testing report -->
         <plugin>
@@ -274,6 +298,25 @@
             <!-- Configured in pluginManagement -->
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Coveralls profile to enable Code Coverage publishing (when -Pcoveralls is passed) -->
+    <profile>
+      <id>coveralls</id>
+      <build>
+        <plugins>
+          <!-- JaCoCo report is required by Coveralls Maven plugin -->
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <!-- Configured in pluginManagement -->
+            <groupId>org.eluder.coveralls</groupId>
+            <artifactId>coveralls-maven-plugin</artifactId>
           </plugin>
         </plugins>
       </build>
