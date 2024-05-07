@@ -30,3 +30,9 @@ jobs:
         mvn verify
         -Ppitest
       working-directory: ${{ env.workdir }}
+    - name: Archive Pitest Report
+      uses: actions/upload-artifact@v4
+      if: ${{ always() }}
+      with:
+        name: pitest-report-jdk-8
+        path: '**/target/pit-reports'
