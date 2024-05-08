@@ -32,10 +32,21 @@
     <build.helper.version>3.5.0</build.helper.version>
     <failsafe.version>2.22.1</failsafe.version>
 
-    <!-- System properties -->
+    <!-- Build properties -->
     <skipUT>false</skipUT>
     <skipIT>false</skipIT>
     <skipBDD>false</skipBDD>
+    
+        
+    <!-- SonarCloud properties -->
+    <sonar.coverage.exclusions>
+      **/model/*.*,
+      **/app/**/*.*
+    </sonar.coverage.exclusions>
+    <sonar.junit.reportPaths>
+      ${project.build.directory}/surefire-reports,
+      ${project.build.directory}/failsafe-reports
+    </sonar.junit.reportPaths>
   </properties>
 
   <dependencies>
