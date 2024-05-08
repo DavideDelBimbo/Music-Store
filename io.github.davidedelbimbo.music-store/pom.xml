@@ -19,6 +19,7 @@
     <junit.version>4.13.2</junit.version>
     <assertj.swing.version>3.17.1</assertj.swing.version>
     <mockito.version>4.4.0</mockito.version>
+    <cucumber.version>7.17.0</cucumber.version>
     <mongodb.version>3.12.14</mongodb.version>
     <logback.version>1.2.8</logback.version>
     <picocli.version>4.7.5</picocli.version>
@@ -56,6 +57,18 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit</artifactId>
+      <version>${cucumber.version}</version>
       <scope>test</scope>
     </dependency>
 
