@@ -256,6 +256,8 @@
               <resources>
                 <resource>
                   <directory>src/it/resources</directory>
+                </resource>
+                <resource>
                   <directory>src/bdd/resources</directory>
                 </resource>
               </resources>
