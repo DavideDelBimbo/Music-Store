@@ -28,6 +28,7 @@
     <coveralls.version>4.3.0</coveralls.version>
     <jaxb.version>2.3.1</jaxb.version>
     <pitest.version>1.16.0</pitest.version>
+    <sonar.version>3.11.0.3922</sonar.version>
     <build.helper.version>3.5.0</build.helper.version>
     <failsafe.version>2.22.1</failsafe.version>
 
@@ -190,6 +191,12 @@
             <!-- Threshold to consider Mutation Testing analysis passed -->
             <mutationThreshold>100</mutationThreshold>
           </configuration>
+        </plugin>
+        <!-- SonarCloud plugin for Code Quality analysis -->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar.version}</version>
         </plugin>
 
         <!-- Site lifecycle -->

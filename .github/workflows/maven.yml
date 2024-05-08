@@ -23,11 +23,20 @@ jobs:
               -DrepoToken=$COVERALLS_REPO_TOKEN
               -DpullRequest=${{ github.event.pull_request.number }}
           - java: 11
+          - java: 17
+            additional-maven-args: >
+              -Pjacoco sonar:sonar
+              -Dsonar.organization=davidedelbimbo-github
+              -Dsonar.host.url=https://sonarcloud.io
+              -Dsonar.projectKey=DavideDelBimbo_Music-Store
 
     name: Build with Java ${{ matrix.java }} on Linux
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        # Disable shallow clones for a better relevancy of Code Quality analysis.
+        fetch-depth: 0
     - name: Set up JDK ${{ matrix.java }}
       uses: actions/setup-java@v4
       with:
@@ -36,7 +45,9 @@ jobs:
     - name: Cache Maven packages
       uses: actions/cache@v4
       with:
-        path: ~/.m2
+        path: |
+          ~/.m2
+          ~/.sonar/cache
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.yml') }}
         restore-keys: ${{ runner.os }}-m2-
     - name: Build with Maven
@@ -45,7 +56,9 @@ jobs:
         ${{ matrix.additional-maven-args }}
       working-directory: ${{ env.workdir }}
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: Generate Unit Test Report
       run: mvn surefire-report:report-only site:site -DgenerateReports=false
       working-directory: ${{ env.workdir }}
