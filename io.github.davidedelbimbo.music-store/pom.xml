@@ -202,11 +202,11 @@
           <configuration>
             <!-- Target source classes for Mutation Testing analysis -->
             <targetClasses>
-              <param>${project.groupId}.${project.artifactId}.controller.*</param>
+              <param>${project.groupId}.music_store.controller.*</param>
             </targetClasses>
             <!-- Target test clases for Mutation Testing analysis -->
             <targetTests>
-              <param>${project.groupId}.${project.artifactId}.controller.*</param>
+              <param>${project.groupId}.music_store.controller.*</param>
             </targetTests>
             <!-- Mutators types for Mutation Testing analysis -->
             <mutators>
