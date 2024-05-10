@@ -31,7 +31,7 @@
     <pitest.version>1.16.0</pitest.version>
     <sonar.version>3.11.0.3922</sonar.version>
     <build.helper.version>3.5.0</build.helper.version>
-    <failsafe.version>2.22.1</failsafe.version>
+    <failsafe.version>2.22.2</failsafe.version>
     <docker.version>0.44.0</docker.version>
 
     <!-- Docker properties -->
@@ -89,7 +89,7 @@
     <!-- Application dependencies -->
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-sync</artifactId>
+      <artifactId>mongo-java-driver</artifactId>
       <version>${mongodb.version}</version>
     </dependency>
     <dependency>
@@ -125,11 +125,15 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
+          <version>2.22.2</version>
           <configuration>
             <!-- Skip Unit Tests when -DskipUT=true is passed -->
             <skipTests>${skipUT}</skipTests>
           </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>2.22.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
@@ -351,7 +355,7 @@
                   <run>
                     <ports>
                       <!-- Map MongoDB port to a random port -->
-                      <port>mongo.port:27017</port>
+                      <port>mongo.mapped.port:27017</port>
                     </ports>
                   </run>
                 </image>
@@ -365,6 +369,10 @@
             <goals>
               <goal>stop</goal>
             </goals>
+            <configuration>
+              <!-- Remove MongoDB volumes -->
+              <removeVolumes>true</removeVolumes>
+            </configuration>
           </execution>
         </executions>
       </plugin>
