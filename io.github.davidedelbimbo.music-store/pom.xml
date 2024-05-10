@@ -48,6 +48,22 @@
       ${project.build.directory}/surefire-reports,
       ${project.build.directory}/failsafe-reports
     </sonar.junit.reportPaths>
+    <!-- Disable SonarCloud rules for specific files -->
+    <sonar.issue.ignore.multicriteria>e1, e2</sonar.issue.ignore.multicriteria>
+    <!-- Disable rule for "Tests should include assertions" (SonarQube is not aware of AssertJ Swing) -->
+    <sonar.issue.ignore.multicriteria.e1.ruleKey>
+      java:S2699
+    </sonar.issue.ignore.multicriteria.e1.ruleKey>
+    <sonar.issue.ignore.multicriteria.e1.resourceKey>
+      **/MusicStoreSwingViewTest.java
+    </sonar.issue.ignore.multicriteria.e1.resourceKey>
+    <!-- Disable rule for "Rename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'."-->
+    <sonar.issue.ignore.multicriteria.e2.ruleKey>
+      java:S117
+    </sonar.issue.ignore.multicriteria.e2.ruleKey>
+    <sonar.issue.ignore.multicriteria.e2.resourceKey>
+      **/MusicStoreSwingView.java
+    </sonar.issue.ignore.multicriteria.e2.resourceKey>
   </properties>
 
   <dependencies>
