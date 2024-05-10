@@ -9,13 +9,13 @@ public interface MusicStoreView {
 
 	void displayAllSongsInStore(List<Song> songs);
 
-	void displayAllSongsInPlaylist(List<Song> songs);
-
 	void displayAllPlaylists(List<Playlist> playlists);
 
 	void displayPlaylist(Playlist playlist);
 
 	void hidePlaylist(Playlist playlist);
+
+	void displayAllSongsInPlaylist(List<Song> songs);
 
 	void displaySongInPlaylist(Playlist playlist, Song song);
 
