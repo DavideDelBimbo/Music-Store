@@ -52,7 +52,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2-
     - name: Build with Maven
       run: >
-        mvn verify
+        xvfb-run mvn verify
         ${{ matrix.additional-maven-args }}
       working-directory: ${{ env.workdir }}
       env:

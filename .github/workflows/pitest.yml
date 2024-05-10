@@ -27,7 +27,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2-
     - name: Build with Maven and execute Mutation Testing
       run: >
-        mvn verify
+        xvfb-run mvn verify
         -Ppitest
       working-directory: ${{ env.workdir }}
     - name: Archive Pitest Report
