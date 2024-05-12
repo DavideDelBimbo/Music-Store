@@ -20,9 +20,9 @@ import java.awt.Color;
 import java.util.List;
 
 import io.github.davidedelbimbo.music_store.model.Song;
+import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
-import javax.swing.ComboBoxModel;
 
 public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
@@ -45,6 +45,8 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	private DefaultListModel<Song> listSongsInStoreModel;
 	private DefaultListModel<Song> listSongsInPlaylistModel;
 
+	private transient MusicStoreController musicStoreController;
+
 	DefaultComboBoxModel<Playlist> getComboBoxPlaylistsModel() {
 		return comboBoxPlaylistsModel;
 	}
@@ -57,12 +59,16 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		return listSongsInPlaylistModel;
 	}
 
+	public void setMusicStoreController(MusicStoreController musicStoreController) {
+		this.musicStoreController = musicStoreController;
+	}
+
 	/**
 	 * Create the frame.
 	 */
 	public MusicStoreSwingView() {
 		setTitle("Music Store View");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -94,15 +100,19 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_comboBoxPlaylists.gridx = 1;
 		gbc_comboBoxPlaylists.gridy = 0;
 		contentPane.add(comboBoxPlaylists, gbc_comboBoxPlaylists);
-		
-		// Playlists combo box listener.
+
+		// Playlist combo box listener.
 		comboBoxPlaylists.addActionListener(e -> {
-			// The delete button should be enabled only when a playlist is selected.
-			btnDeletePlaylist.setEnabled(comboBoxPlaylists.getSelectedIndex() != -1);
-			// The add button should be enabled only when a song in store list and a playlist are selected.
-			btnAddToPlaylist.setEnabled(listSongsInStore.getSelectedIndex() != -1 && comboBoxPlaylists.getSelectedIndex() != -1);
-			// The remove button should be enabled only when a song in playlist list and a playlist are selected.
-			btnRemoveFromPlaylist.setEnabled(listSongsInPlaylist.getSelectedIndex() != -1 && comboBoxPlaylists.getSelectedIndex() != -1);
+			// Toggle buttons based on selection.
+			enableDisableButtons();
+
+			// Show all songs in selected playlist.
+			if (comboBoxPlaylists.getSelectedIndex() != -1) {
+				Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+				musicStoreController.allSongsInPlaylist(playlist);
+			} else {
+				listSongsInPlaylistModel.clear();
+			}
 		});
 
 		btnCreatePlaylist = new JButton("Create new playlist");
@@ -114,6 +124,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_btnCreatePlaylist.gridy = 1;
 		contentPane.add(btnCreatePlaylist, gbc_btnCreatePlaylist);
 
+		// Create button listener.
+		//btnCreatePlaylist.addActionListener(e -> new CreatePlaylistDialog().showDialog());
+
 		btnDeletePlaylist = new JButton("Delete selcted playlist");
 		btnDeletePlaylist.setEnabled(false);
 		btnDeletePlaylist.setName("btnDeletePlaylist");
@@ -123,6 +136,13 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_btnDeletePlaylist.gridx = 4;
 		gbc_btnDeletePlaylist.gridy = 1;
 		contentPane.add(btnDeletePlaylist, gbc_btnDeletePlaylist);
+
+		// Delete button listener.
+		btnDeletePlaylist.addActionListener(e -> {
+			// Delete selected playlist.
+			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+			musicStoreController.deletePlaylist(playlist);
+		});
 
 		scrollPaneSongsInStore = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
@@ -141,9 +161,10 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		// List of songs in store listener.
 		listSongsInStore.addListSelectionListener(e -> {
-			// The add button should be enabled only when a song in store list and a playlist are selected.
-			btnAddToPlaylist.setEnabled(listSongsInStore.getSelectedIndex() != -1 && comboBoxPlaylists.getSelectedIndex() != -1);
-			// No simultaneous selection of in store and in playlist songs.
+			// Toggle buttons based on selection.
+			enableDisableButtons();
+
+			// Selecting a song in store list should clear the selection of a song in playlist list.
 			listSongsInPlaylist.clearSelection();
 		});
 
@@ -162,12 +183,15 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		listSongsInPlaylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneSongsInPlaylist.setViewportView(listSongsInPlaylist);
 
+		// List of songs in store listener.
 		listSongsInPlaylist.addListSelectionListener(e -> {
-			// The remove button should be enabled only when a song in playlist list and a playlist are selected.
-			btnRemoveFromPlaylist.setEnabled(listSongsInPlaylist.getSelectedIndex() != -1 && comboBoxPlaylists.getSelectedIndex() != -1);
-			// No simultaneous selection of in store and in playlist songs.
+			// Toggle buttons based on selection.
+			enableDisableButtons();
+
+			// Selecting a song in playlist list should clear the selection of a song in store list.
 			listSongsInStore.clearSelection();
 		});
+		
 
 		btnAddToPlaylist = new JButton("Add to playlist");
 		btnAddToPlaylist.setEnabled(false);
@@ -179,6 +203,14 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_btnAddToPlaylist.gridy = 3;
 		contentPane.add(btnAddToPlaylist, gbc_btnAddToPlaylist);
 
+		// Add song to playlist button listener.
+		btnAddToPlaylist.addActionListener(e -> {
+			// Add selected song to selected playlist.
+			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+			Song song = listSongsInStore.getSelectedValue();
+			musicStoreController.addSongToPlaylist(playlist, song);
+		});
+
 		btnRemoveFromPlaylist = new JButton("Remove from playlist");
 		btnRemoveFromPlaylist.setEnabled(false);
 		btnRemoveFromPlaylist.setName("btnRemoveFromPlaylist");
@@ -188,6 +220,14 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_btnRemoveFromPlaylist.gridx = 4;
 		gbc_btnRemoveFromPlaylist.gridy = 3;
 		contentPane.add(btnRemoveFromPlaylist, gbc_btnRemoveFromPlaylist);
+
+		// Remove song from playlist button listener.
+		btnRemoveFromPlaylist.addActionListener(e -> {
+			// Remove selected song from selected playlist.
+			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+			Song song = listSongsInPlaylist.getSelectedValue();
+			musicStoreController.removeSongFromPlaylist(playlist, song);
+		});
 
 		lblErrorMessage = new JLabel(" ");
 		lblErrorMessage.setName("lblErrorMessage");
@@ -204,49 +244,61 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void displayAllSongsInStore(List<Song> songs) {
-		// TODO Auto-generated method stub
-		
+		songs.stream().forEach(listSongsInStoreModel::addElement);
 	}
 
 	@Override
 	public void displayAllSongsInPlaylist(List<Song> songs) {
-		// TODO Auto-generated method stub
-		
+		songs.stream().forEach(listSongsInPlaylistModel::addElement);
 	}
 
 	@Override
 	public void displayAllPlaylists(List<Playlist> playlists) {
-		// TODO Auto-generated method stub
-		
+		playlists.stream().forEach(comboBoxPlaylistsModel::addElement);
 	}
 
 	@Override
 	public void displayPlaylist(Playlist playlist) {
-		// TODO Auto-generated method stub
-		
+		comboBoxPlaylistsModel.addElement(playlist);
+		comboBoxPlaylists.setSelectedItem(playlist);
+		resetErrrorLabel();
 	}
 
 	@Override
 	public void hidePlaylist(Playlist playlist) {
-		// TODO Auto-generated method stub
-		
+		comboBoxPlaylistsModel.removeElement(playlist);
+		comboBoxPlaylists.setSelectedIndex(-1);
+		resetErrrorLabel();
 	}
 
 	@Override
-	public void displaySongInPlaylist(Playlist playlist, Song song) {
-		// TODO Auto-generated method stub
-		
+	public void displaySongInPlaylist(Song song) {
+		listSongsInPlaylistModel.addElement(song);
+		resetErrrorLabel();
 	}
 
 	@Override
-	public void hideSongFromPlaylist(Playlist playlist, Song song) {
-		// TODO Auto-generated method stub
-		
+	public void hideSongFromPlaylist(Song song) {
+		listSongsInPlaylistModel.removeElement(song);
+		resetErrrorLabel();
 	}
 
 	@Override
 	public void displayError(String message) {
-		// TODO Auto-generated method stub
-		
+		lblErrorMessage.setText(message);
+	}
+
+	private void resetErrrorLabel() {
+		lblErrorMessage.setText(" ");
+	}
+
+	private void enableDisableButtons() {
+		boolean isPlaylistSelected = comboBoxPlaylists.getSelectedIndex() != -1;
+		boolean isSongInStoreSelected = listSongsInStore.getSelectedIndex() != -1;
+		boolean isSongInPlaylistSelected = listSongsInPlaylist.getSelectedIndex() != -1;
+
+		btnDeletePlaylist.setEnabled(isPlaylistSelected);
+		btnAddToPlaylist.setEnabled(isPlaylistSelected && isSongInStoreSelected);
+		btnRemoveFromPlaylist.setEnabled(isPlaylistSelected && isSongInPlaylistSelected);
 	}
 }

@@ -129,7 +129,7 @@ public class MusicStoreControllerTest {
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
 
-		musicStoreController.addSongInPlaylist(playlist, songToAdd);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		verify(musicStoreView).displayError(MusicStoreController.PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
@@ -142,7 +142,7 @@ public class MusicStoreControllerTest {
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(null);
 
-		musicStoreController.addSongInPlaylist(playlist, songToAdd);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		verify(musicStoreView)
 			.displayError(MusicStoreController.SONG_NOT_FOUND_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
@@ -158,7 +158,7 @@ public class MusicStoreControllerTest {
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
 
-		musicStoreController.addSongInPlaylist(playlist, songToAdd);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		verify(musicStoreView)
 			.displayError(MusicStoreController.SONG_ALREADY_IN_PLAYLIST_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
@@ -174,13 +174,13 @@ public class MusicStoreControllerTest {
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
 
-		musicStoreController.addSongInPlaylist(playlist, songToAdd);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		assertThat(playlist.getSongs())
 			.containsExactly(existingSong, songToAdd);
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
-		inOrder.verify(musicStoreView).displaySongInPlaylist(playlist, songToAdd);
+		inOrder.verify(musicStoreView).displaySongInPlaylist(songToAdd);
 	}
 
 	@Test
@@ -241,6 +241,6 @@ public class MusicStoreControllerTest {
 			.isEmpty();
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
-		inOrder.verify(musicStoreView).hideSongFromPlaylist(playlist, songToRemove);
+		inOrder.verify(musicStoreView).hideSongFromPlaylist(songToRemove);
 	}
 }

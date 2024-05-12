@@ -61,7 +61,7 @@ public class MusicStoreController {
 		musicStoreView.displayAllSongsInPlaylist(songs);
 	}
 
-	public void addSongInPlaylist(Playlist playlist, Song song) {
+	public void addSongToPlaylist(Playlist playlist, Song song) {
 		// Check if playlist exists.
 		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
 		if (playlistToUpdate == null) {
@@ -85,7 +85,7 @@ public class MusicStoreController {
 		// Add song to playlist.
 		playlistToUpdate.addSong(songToAdd);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
-		musicStoreView.displaySongInPlaylist(playlistToUpdate, songToAdd);
+		musicStoreView.displaySongInPlaylist(songToAdd);
 	}
 
 	public void removeSongFromPlaylist(Playlist playlist, Song song) {
@@ -112,6 +112,6 @@ public class MusicStoreController {
 		// Remove song from playlist.
 		playlistToUpdate.removeSong(songToRemove);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
-		musicStoreView.hideSongFromPlaylist(playlistToUpdate, songToRemove);
+		musicStoreView.hideSongFromPlaylist(songToRemove);
 	}
 }
