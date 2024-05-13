@@ -82,6 +82,17 @@ public class MusicStoreMongoRepositoryIT {
 	}
 
 	@Test
+	public void testInitilizeSongCollection() {
+		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
+
+		this.musicStoreRepository.initilizeSongCollection(Arrays.asList(song1, song2));
+		
+		assertThat(readAllSongsFromDatabase())
+			.containsExactly(song1, song2);
+	}
+
+	@Test
 	public void testFindSongByIdWhenSongDoesNotExist() {
 		assertThat(this.musicStoreRepository.findSongById(SONG_1_ID))
 			.isNull();
@@ -200,6 +211,16 @@ public class MusicStoreMongoRepositoryIT {
 						.append(MusicStoreMongoRepository.TITLE_FIELD, song.getTitle())
 						.append(MusicStoreMongoRepository.ARTIST_FIELD, song.getArtist()))
 					.collect(Collectors.toList())));
+	}
+
+	private List<Song> readAllSongsFromDatabase() {
+		return StreamSupport
+			.stream(this.songCollection.find().spliterator(), false)
+			.map(songDocument -> new Song(
+				songDocument.getInteger(MusicStoreMongoRepository.ID_FIELD),
+				songDocument.getString(MusicStoreMongoRepository.TITLE_FIELD),
+				songDocument.getString(MusicStoreMongoRepository.ARTIST_FIELD)))
+			.collect(Collectors.toList());
 	}
 
 	private List<Playlist> readAllPlaylistsFromDatabase() {
