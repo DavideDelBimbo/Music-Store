@@ -32,6 +32,7 @@
     <sonar.version>3.11.0.3922</sonar.version>
     <build.helper.version>3.5.0</build.helper.version>
     <failsafe.version>2.22.2</failsafe.version>
+    <docker.version>0.44.0</docker.version>
 
     <!-- Docker properties -->
     <docker.image.mongodb>mongo:6.0.14</docker.image.mongodb>
@@ -40,8 +41,7 @@
     <skipUT>false</skipUT>
     <skipIT>false</skipIT>
     <skipBDD>false</skipBDD>
-    
-        
+
     <!-- SonarCloud properties -->
     <sonar.coverage.exclusions>
       **/model/*.*,
@@ -213,7 +213,7 @@
             </targetClasses>
             <!-- Target test clases for Mutation Testing analysis -->
             <targetTests>
-              <param>${project.groupId}.music_store.controller.*</param>
+              <param>${project.groupId}.music_store.controller.*Test</param>
             </targetTests>
             <!-- Mutators types for Mutation Testing analysis -->
             <mutators>
@@ -321,6 +321,57 @@
               <includes>
                 <include>**/*BDD.java</include>	
               </includes>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- System property variables -->
+          <systemPropertyVariables>
+            <!--  Pass MongoDB port to Integration Tests -->
+            <mongo.port>${mongo.mapped.port}</mongo.port>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <!-- Docker plugin to start and stop containers -->
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${docker.version}</version>
+        <executions>
+          <!-- Start MongoDB container -->
+          <execution>
+            <id>start</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+            <configuration>
+              <!-- MongoDB image -->
+              <images>
+                <image>
+                  <alias>mongodb-database</alias>
+                  <name>${docker.image.mongodb}</name>
+                  <!-- MongoDB configuration -->
+                  <run>
+                    <ports>
+                      <!-- Map MongoDB port to a random port -->
+                      <port>mongo.mapped.port:27017</port>
+                    </ports>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+          </execution>
+          <!-- Stop MongoDB container -->
+          <execution>
+            <id>docker-stop</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+            <configuration>
+              <!-- Remove MongoDB volumes -->
+              <removeVolumes>true</removeVolumes>
             </configuration>
           </execution>
         </executions>

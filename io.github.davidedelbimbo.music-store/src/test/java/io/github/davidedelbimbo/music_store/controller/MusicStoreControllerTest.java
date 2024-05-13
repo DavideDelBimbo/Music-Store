@@ -180,7 +180,7 @@ public class MusicStoreControllerTest {
 			.containsExactly(existingSong, songToAdd);
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
-		inOrder.verify(musicStoreView).displaySongInPlaylist(playlist, songToAdd);
+		inOrder.verify(musicStoreView).displaySongInPlaylist(songToAdd);
 	}
 
 	@Test
@@ -241,6 +241,6 @@ public class MusicStoreControllerTest {
 			.isEmpty();
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
-		inOrder.verify(musicStoreView).hideSongFromPlaylist(playlist, songToRemove);
+		inOrder.verify(musicStoreView).hideSongFromPlaylist(songToRemove);
 	}
 }
