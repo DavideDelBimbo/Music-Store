@@ -6,12 +6,14 @@ import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
 
 public interface MusicStoreRepository {
-	void initilizeSongCollection(List<Song> songs);
-
 	List<Song> findAllSongs();
 
 	Song findSongById(Integer songId);
-	
+
+	void addSong(Song song);
+
+	void removeSong(Song song);
+
 	List<Playlist> findAllPlaylists();
 
 	Playlist findPlaylistByName(String playlistName);

@@ -34,14 +34,6 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 	}
 
 	@Override
-	public void initilizeSongCollection(List<Song> songs) {
-		this.songCollection.insertMany(
-			songs.stream()
-			.map(this::fromSongToDocument)
-			.collect(Collectors.toList()));
-	}
-
-	@Override
 	public List<Song> findAllSongs() {
 		return StreamSupport
 			.stream(songCollection.find().spliterator(), false)
@@ -56,6 +48,16 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 			return fromDocumentToSong(songDocument);
 		}
 		return null;
+	}
+
+	@Override
+	public void addSong(Song song) {
+		this.songCollection.insertOne(fromSongToDocument(song));
+	}
+
+	@Override
+	public void removeSong(Song song) {
+		this.songCollection.deleteOne(Filters.eq(ID_FIELD, song.getId()));
 	}
 
 	@Override

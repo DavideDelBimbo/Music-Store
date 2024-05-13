@@ -82,17 +82,6 @@ public class MusicStoreMongoRepositoryIT {
 	}
 
 	@Test
-	public void testInitilizeSongCollection() {
-		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-
-		this.musicStoreRepository.initilizeSongCollection(Arrays.asList(song1, song2));
-		
-		assertThat(readAllSongsFromDatabase())
-			.containsExactly(song1, song2);
-	}
-
-	@Test
 	public void testFindSongByIdWhenSongDoesNotExist() {
 		assertThat(this.musicStoreRepository.findSongById(SONG_1_ID))
 			.isNull();
@@ -108,6 +97,28 @@ public class MusicStoreMongoRepositoryIT {
 
 		assertThat(this.musicStoreRepository.findSongById(SONG_2_ID))
 			.isEqualTo(songToFind);
+	}
+
+	@Test
+	public void testAddSong() {
+		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+
+		musicStoreRepository.addSong(songToAdd);
+
+		assertThat(readAllSongsFromDatabase())
+			.containsExactly(songToAdd);
+	}
+
+	@Test
+	public void testRemoveSong() {
+		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+
+		addTestSongToDatabase(songToRemove);
+
+		musicStoreRepository.removeSong(songToRemove);
+
+		assertThat(readAllSongsFromDatabase())
+			.isEmpty();
 	}
 
 	@Test
@@ -158,7 +169,8 @@ public class MusicStoreMongoRepositoryIT {
 
 		musicStoreRepository.createPlaylist(playlistToCreate);
 
-		assertThat(readAllPlaylistsFromDatabase()).containsExactly(playlistToCreate);
+		assertThat(readAllPlaylistsFromDatabase())
+			.containsExactly(playlistToCreate);
 	}
 
 	@Test
