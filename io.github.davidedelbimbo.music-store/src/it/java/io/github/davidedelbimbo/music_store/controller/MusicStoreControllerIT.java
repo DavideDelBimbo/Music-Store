@@ -129,7 +129,7 @@ public class MusicStoreControllerIT {
 		Playlist playlist = new Playlist(PLAYLIST_NAME);
 		musicStoreRepository.createPlaylist(playlist);
 
-		musicStoreController.addSongInPlaylist(playlist, songToAdd);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		verify(musicStoreView).displaySongInPlaylist(songToAdd);
 	}
