@@ -341,7 +341,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testDisplayErrorShouldShowTheMessageInTheErrorLabel() {
-		GuiActionRunner.execute(() -> musicStoreSwingView.displayError("Error message"));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayError("Error message"));
 
 		// Verify that the error message is displayed.
 		window.label(LBL_ERROR_MESSAGE).requireText("Error message");

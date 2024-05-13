@@ -233,7 +233,6 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		lblErrorMessage.setName("lblErrorMessage");
 		lblErrorMessage.setForeground(new Color(255, 0, 0));
 		GridBagConstraints gbc_lblErrorMessage = new GridBagConstraints();
-		gbc_lblErrorMessage.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblErrorMessage.insets = new Insets(0, 0, 0, 5);
 		gbc_lblErrorMessage.gridwidth = 5;
 		gbc_lblErrorMessage.gridx = 0;
