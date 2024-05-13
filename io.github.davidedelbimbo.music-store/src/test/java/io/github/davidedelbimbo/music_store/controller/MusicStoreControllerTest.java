@@ -174,7 +174,7 @@ public class MusicStoreControllerTest {
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
 
-		musicStoreController.addSongToPlaylist(playlist, songToAdd);
+    musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		assertThat(playlist.getSongs())
 			.containsExactly(existingSong, songToAdd);

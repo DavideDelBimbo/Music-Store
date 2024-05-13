@@ -6,7 +6,6 @@ import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
 
 public interface MusicStoreView {
-
 	void displayAllSongsInStore(List<Song> songs);
 
 	void displayAllPlaylists(List<Playlist> playlists);
