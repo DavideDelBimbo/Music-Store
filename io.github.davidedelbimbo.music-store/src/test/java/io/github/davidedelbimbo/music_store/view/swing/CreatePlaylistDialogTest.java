@@ -46,6 +46,13 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 	}
 
 
+	@Override
+	protected void onTearDown() {
+		if (dialog != null){
+			dialog.cleanUp();
+		}
+	}
+
 	// Tests to verify GUI controls.
 	@Test @GUITest
 	public void testControlsInitialStates() {
