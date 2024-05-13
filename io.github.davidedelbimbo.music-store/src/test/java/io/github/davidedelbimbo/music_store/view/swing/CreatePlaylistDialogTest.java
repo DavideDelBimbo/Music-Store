@@ -16,8 +16,8 @@ import io.github.davidedelbimbo.music_store.model.Playlist;
 
 @RunWith(GUITestRunner.class)
 public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
-	private static final String LBL_NAME = "lblName";
-	private static final String TXT_NAME = "txtName";	
+	private static final String LBL_NAME = "lblPlaylistName";
+	private static final String TXT_NAME = "txtPlaylistName";	
 	private static final String BTN_CREATE_PLAYLIST = "btnCreatePlaylist";
 	private static final String BTN_CANCEL = "btnCancel";
 	private static final String LBL_ERROR_MESSAGE = "lblErrorMessage";
@@ -81,7 +81,7 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 
 	// Tests to verify GUI events.
 	@Test @GUITest
-	public void testCreatePlaylistButtonShouldDelegateToMusicStoreControllerCreatePlaylistAndCloseTheDialog() {
+	public void testCreatePlaylistButtonShouldDelegateToMusicStoreControllerCreatePlaylistAndResetTheErrorLabelAndCloseTheDialog() {
 		dialog.textBox(TXT_NAME).enterText(PLAYLIST_NAME);
 		dialog.button(BTN_CREATE_PLAYLIST).click();
 
@@ -90,7 +90,7 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testCancelButtonShouldCloseTheDialog() {
+	public void testCancelButtonShouldResetTheErrorLabelAndCloseTheDialog() {
 		dialog.button(BTN_CANCEL).click();
 		dialog.requireNotVisible();
 	}

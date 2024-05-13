@@ -39,8 +39,9 @@ public class CreatePlaylistDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public CreatePlaylistDialog() {
+		setAlwaysOnTop(true);
 		setTitle("Create A Playlist");
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 150);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -53,7 +54,7 @@ public class CreatePlaylistDialog extends JDialog {
 		contentPane.setLayout(gbl_contentPane);
 
 		lblName = new JLabel("Name");
-		lblName.setName("lblName");
+		lblName.setName("lblPlaylistName");
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
 		gbc_lblName.anchor = GridBagConstraints.EAST;
 		gbc_lblName.insets = new Insets(0, 0, 5, 5);
@@ -62,7 +63,7 @@ public class CreatePlaylistDialog extends JDialog {
 		contentPane.add(lblName, gbc_lblName);
 
 		txtName = new JTextField();
-		txtName.setName("txtName");
+		txtName.setName("txtPlaylistName");
 		GridBagConstraints gbc_txtName = new GridBagConstraints();
 		gbc_txtName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtName.insets = new Insets(0, 0, 5, 0);
@@ -120,11 +121,13 @@ public class CreatePlaylistDialog extends JDialog {
 	}
 
 
-	public void closeDialog() {
-		this.dispose();
-	}
-
 	public void displayError(String message) {
 		lblErrorMessage.setText(message);
+	}
+
+
+	// Helper methods.
+	private void closeDialog() {
+		this.dispose();
 	}
 }

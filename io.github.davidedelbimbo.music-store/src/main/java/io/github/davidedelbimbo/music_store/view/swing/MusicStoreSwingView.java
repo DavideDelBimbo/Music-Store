@@ -47,7 +47,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	private transient MusicStoreController musicStoreController;
 
-	DefaultComboBoxModel<Playlist> getComboBoxPlaylistsModel() {
+	public DefaultComboBoxModel<Playlist> getComboBoxPlaylistsModel() {
 		return comboBoxPlaylistsModel;
 	}
 
@@ -126,6 +126,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_btnCreatePlaylist.gridx = 1;
 		gbc_btnCreatePlaylist.gridy = 1;
 		contentPane.add(btnCreatePlaylist, gbc_btnCreatePlaylist);
+
+		// Create playlist button listener.
+		btnCreatePlaylist.addActionListener(e -> new CreatePlaylistDialog().setVisible(true));
 
 		btnDeletePlaylist = new JButton("Delete selcted playlist");
 		btnDeletePlaylist.setEnabled(false);
@@ -260,26 +263,26 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	public void displayPlaylist(Playlist playlist) {
 		comboBoxPlaylistsModel.addElement(playlist);
 		comboBoxPlaylists.setSelectedItem(playlist);
-		resetErrrorLabel();
+		resetErrorLabel();
 	}
 
 	@Override
 	public void hidePlaylist(Playlist playlist) {
 		comboBoxPlaylistsModel.removeElement(playlist);
 		comboBoxPlaylists.setSelectedIndex(-1);
-		resetErrrorLabel();
+		resetErrorLabel();
 	}
 
 	@Override
 	public void displaySongInPlaylist(Song song) {
 		listSongsInPlaylistModel.addElement(song);
-		resetErrrorLabel();
+		resetErrorLabel();
 	}
 
 	@Override
 	public void hideSongFromPlaylist(Song song) {
 		listSongsInPlaylistModel.removeElement(song);
-		resetErrrorLabel();
+		resetErrorLabel();
 	}
 
 	@Override
@@ -289,7 +292,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 
 	// Helper methods.
-	private void resetErrrorLabel() {
+	private void resetErrorLabel() {
 		lblErrorMessage.setText(" ");
 	}
 
