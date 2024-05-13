@@ -213,7 +213,7 @@
             </targetClasses>
             <!-- Target test clases for Mutation Testing analysis -->
             <targetTests>
-              <param>${project.groupId}.music_store.controller.*</param>
+              <param>${project.groupId}.music_store.controller.*Test</param>
             </targetTests>
             <!-- Mutators types for Mutation Testing analysis -->
             <mutators>
