@@ -68,16 +68,25 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	// Tests to verify GUI controls.
 	@Test @GUITest
-	public void testMusicStoreControlsInitialStates() {
-		window.label(LBL_SELECT_PLAYLIST).requireText("Select a playlist");
-		window.comboBox(COMBO_BOX_PLAYLISTS).requireEnabled().requireNoSelection();
+	public void testControlsInitialStates() {
+		window.label(LBL_SELECT_PLAYLIST);
+		window.comboBox(COMBO_BOX_PLAYLISTS).requireNoSelection();
 		window.button(BTN_CREATE_PLAYLIST).requireEnabled();
 		window.button(BTN_DELETE_PLAYLIST).requireDisabled();
-		window.list(LIST_SONGS_IN_STORE).requireItemCount(0).requireEnabled();
-		window.list(LIST_SONGS_IN_PLAYLIST).requireItemCount(0).requireEnabled();
+		window.list(LIST_SONGS_IN_STORE);
+		window.list(LIST_SONGS_IN_PLAYLIST).requireItemCount(0);
 		window.button(BTN_ADD_TO_PLAYLIST).requireDisabled();
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireDisabled();
 		window.label(LBL_ERROR_MESSAGE).requireText(" ");
+	}
+
+	@Test @GUITest
+	public void testUnselectingAPlaylistShouldClearThePlaylistList() {
+		GuiActionRunner.execute(() -> 
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
+
+		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
+		window.list(LIST_SONGS_IN_PLAYLIST).requireItemCount(0);
 	}
 
 	@Test @GUITest
@@ -85,7 +94,6 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME)));
 
-		// Verify that button is enabled when a playlist is selected.
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.button(BTN_DELETE_PLAYLIST).requireEnabled();
 	}
@@ -95,9 +103,6 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME)));
 
-		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
-
-		// Verify that button is disabled when no playlist is selected.
 		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
 		window.button(BTN_DELETE_PLAYLIST).requireDisabled();
 	}
@@ -109,7 +114,6 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
-		// Verify that button is enabled when a playlist and a song are selected.
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.button(BTN_ADD_TO_PLAYLIST).requireEnabled();
@@ -120,10 +124,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME)));
 
-		// Clear the selection of the playlist.
 		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
-
-		// Verify that the button is disabled when no playlist is selected.
 		window.button(BTN_ADD_TO_PLAYLIST).requireDisabled();
 	}
 
@@ -132,10 +133,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
 
-		// Clear the selection of the song.
 		window.list(LIST_SONGS_IN_STORE).clearSelection();
-
-		// Verify that button is disabled when no song is selected.
 		window.button(BTN_ADD_TO_PLAYLIST).requireDisabled();
 	}
 
@@ -146,11 +144,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
-		// Clear the selection of the playlist and the song.
 		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
 		window.list(LIST_SONGS_IN_STORE).clearSelection();
-
-		// Verify that button is disabled when no playlist and no song are selected.
 		window.button(BTN_ADD_TO_PLAYLIST).requireDisabled();
 	}
 
@@ -161,7 +156,6 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
-		// Verify that button is enabled when a playlist and a song are selected.
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireEnabled();
@@ -172,10 +166,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME)));
 
-		// Clear the selection of the playlist.
 		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
-
-		// Verify that button is disabled when no playlist is selected.
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireDisabled();
 	}
 
@@ -184,10 +175,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
 
-		// Clear the selection of the song.
 		window.list(LIST_SONGS_IN_PLAYLIST).clearSelection();
-
-		// Verify that button is disabled when no song is selected.
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireDisabled();
 	}
 
@@ -198,41 +186,33 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
-		// Clear the selection of the playlist and the song.
 		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
 		window.list(LIST_SONGS_IN_PLAYLIST).clearSelection();
-
-		// Verify that button is disabled when no playlist and no song are selected.
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireDisabled();
 	}
 
 	@Test @GUITest
-	public void testSelectingASongInAListShouldDeselectTheSongInTheOtherList() {
+	public void testSelectingASongInStoreShouldUnselectTheSongInPlaylist() {
 		GuiActionRunner.execute(() -> {
 			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
-		// Verify that no song is selected in the store list.
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.list(LIST_SONGS_IN_STORE).requireNoSelection();
-
-		// Verify that no song is selected in the playlist list.
-		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
-		window.list(LIST_SONGS_IN_STORE).selectItem(0);
-		window.list(LIST_SONGS_IN_PLAYLIST).requireNoSelection();
 	}
 
 	@Test @GUITest
-	public void testDeselctPlaylistFromComboBoxShouldClearThePlaylistList() {
-		Song song = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		GuiActionRunner.execute(() -> 
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(song));
+	public void testSelectingASongInPlaylistShouldUnselectTheSongInStore() {
+		GuiActionRunner.execute(() -> {
+			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+		});
 
-		// Verify that the playlist list is cleared.
-		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
-		window.list(LIST_SONGS_IN_PLAYLIST).requireItemCount(0);
+		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
+		window.list(LIST_SONGS_IN_STORE).selectItem(0);
+		window.list(LIST_SONGS_IN_PLAYLIST).requireNoSelection();
 	}
 
 
@@ -245,7 +225,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.displayAllSongsInStore(Arrays.asList(song1, song2)));
 
-		// Verify that the songs are added to the song store list.
+		// Verify that songs are added to the store list.
 		String[] listContents = window.list(LIST_SONGS_IN_STORE).contents();
 		assertThat(listContents).containsExactly(song1.toString(), song2.toString());
 	}
@@ -255,9 +235,10 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		Song song2 = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
 
-		GuiActionRunner.execute(() -> musicStoreSwingView.displayAllSongsInPlaylist(Arrays.asList(song1, song2)));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayAllSongsInPlaylist(Arrays.asList(song1, song2)));
 
-		// Verify that the songs are added to the playlist list.
+		// Verify that songs are added to the playlist list.
 		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
 		assertThat(listContents).containsExactly(song1.toString(), song2.toString());
 	}
@@ -267,9 +248,10 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		Playlist playlist1 = new Playlist(PLAYLIST_1_NAME);
 		Playlist playlist2 = new Playlist(PLAYLIST_2_NAME);
 
-		GuiActionRunner.execute(() -> musicStoreSwingView.displayAllPlaylists(Arrays.asList(playlist1, playlist2)));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayAllPlaylists(Arrays.asList(playlist1, playlist2)));
 
-		// Verify that the playlists are added to the combo box.
+		// Verify that playlists are added to the combo box.
 		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
 		assertThat(comboBoxContents).containsExactly(playlist1.toString(), playlist2.toString());
 	}
@@ -281,21 +263,22 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> 
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(existingPlaylist));
 		
-		GuiActionRunner.execute(() -> musicStoreSwingView.displayPlaylist(playlistToAdd));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayPlaylist(playlistToAdd));
 
-		// Verify that the playlist is displayed in the combo box.
+		// Verify that playlist is displayed in the combo box.
 		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
 		assertThat(comboBoxContents).containsExactly(existingPlaylist.toString(), playlistToAdd.toString());
 
-		// Verify that the playlist is selected in the combo box.
+		// Verify that playlist is selected in the combo box.
 		window.comboBox(COMBO_BOX_PLAYLISTS).requireSelection(playlistToAdd.toString());
 
-		// Verify that the error message is reset.
+		// Verify that error message is reset.
 		window.label(LBL_ERROR_MESSAGE).requireText(" ");
 	}
 
 	@Test @GUITest
-	public void testHidePlaylistShouldHideThePlaylistFromTheComboBoxAndResetSelectedPlaylistAndResetTheErrorLabel() {
+	public void testHidePlaylistShouldRemoveThePlaylistFromComboBoxAndResetSelectedPlaylistAndResetTheErrorLabel() {
 		Playlist playlistToHide = new Playlist(PLAYLIST_1_NAME);
 		Playlist existingPlaylist = new Playlist(PLAYLIST_2_NAME);
 		GuiActionRunner.execute(() -> {
@@ -304,16 +287,17 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			comboBoxPlaylistsModel.addElement(existingPlaylist);
 		});
 
-		GuiActionRunner.execute(() -> musicStoreSwingView.hidePlaylist(new Playlist(PLAYLIST_1_NAME)));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.hidePlaylist(new Playlist(PLAYLIST_1_NAME)));
 
-		// Verify that the playlist is removed from the combo box.
+		// Verify that playlist is removed from the combo box.
 		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
 		assertThat(comboBoxContents).containsExactly(existingPlaylist.toString());
 
 		// Verify that no playlist is selected in the combo box.
 		window.comboBox(COMBO_BOX_PLAYLISTS).requireNoSelection();
 
-		// Verify that the error message is reset.
+		// Verify that error message is reset.
 		window.label(LBL_ERROR_MESSAGE).requireText(" ");
 	}
 
@@ -324,13 +308,14 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(existingSong));
 
-		GuiActionRunner.execute(() -> musicStoreSwingView.displaySongInPlaylist(songToAdd));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displaySongInPlaylist(songToAdd));
 
-		// Verify that the song is added to the playlist list.
+		// Verify that song is added to the playlist list.
 		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
 		assertThat(listContents).containsExactly(existingSong.toString(), songToAdd.toString());
 
-		// Verify that the error message is reset.
+		// Verify that error message is reset.
 		window.label(LBL_ERROR_MESSAGE).requireText(" ");
 	}
 
@@ -343,7 +328,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(existingSong);
 		});
 
-		GuiActionRunner.execute(() -> musicStoreSwingView.hideSongFromPlaylist(songToHide));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.hideSongFromPlaylist(songToHide));
 
 		// Verify that the song is removed from the playlist list.
 		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
@@ -366,9 +352,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testSelectPlaylistFromComboBoxShouldDelegateToMusicStoreControllerAllSongsInPlaylist() {
 		List<Song> songs = new ArrayList<>(Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
-		GuiActionRunner.execute(() -> {
-			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME, songs));
-		});
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME, songs)));
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 
@@ -377,9 +362,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testDeletePlaylistButtonShouldDelegateToMusicStoreControllerDeletePlaylist() {
-		GuiActionRunner.execute(() -> {
-			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
-		});
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME)));
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.button(BTN_DELETE_PLAYLIST).click();

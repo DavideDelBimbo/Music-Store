@@ -104,13 +104,16 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// Playlist combo box listener.
 		comboBoxPlaylists.addActionListener(e -> {
 			// Toggle buttons based on selection.
-			enableDisableButtons();
+			toggleDeletePlaylistButton();
+			toggleAddToPlaylistButton();
+			toggleRemoveFromPlaylistButton();
 
-			// Show all songs in selected playlist.
 			if (comboBoxPlaylists.getSelectedIndex() != -1) {
+				// Display all songs in selected playlist.
 				Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
 				musicStoreController.allSongsInPlaylist(playlist);
 			} else {
+				// Clear the list of songs in playlist.
 				listSongsInPlaylistModel.clear();
 			}
 		});
@@ -123,9 +126,6 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_btnCreatePlaylist.gridx = 1;
 		gbc_btnCreatePlaylist.gridy = 1;
 		contentPane.add(btnCreatePlaylist, gbc_btnCreatePlaylist);
-
-		// Create button listener.
-		//btnCreatePlaylist.addActionListener(e -> new CreatePlaylistDialog().showDialog());
 
 		btnDeletePlaylist = new JButton("Delete selcted playlist");
 		btnDeletePlaylist.setEnabled(false);
@@ -162,9 +162,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// List of songs in store listener.
 		listSongsInStore.addListSelectionListener(e -> {
 			// Toggle buttons based on selection.
-			enableDisableButtons();
+			toggleAddToPlaylistButton();
 
-			// Selecting a song in store list should clear the selection of a song in playlist list.
+			// Selecting a song in store list should clear the selection in playlist list.
 			listSongsInPlaylist.clearSelection();
 		});
 
@@ -186,9 +186,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// List of songs in store listener.
 		listSongsInPlaylist.addListSelectionListener(e -> {
 			// Toggle buttons based on selection.
-			enableDisableButtons();
+			toggleRemoveFromPlaylistButton();
 
-			// Selecting a song in playlist list should clear the selection of a song in store list.
+			// Selecting a song in playlist list should clear the selection in store list.
 			listSongsInStore.clearSelection();
 		});
 		
@@ -288,17 +288,31 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		lblErrorMessage.setText(message);
 	}
 
+
+	// Helper methods.
 	private void resetErrrorLabel() {
 		lblErrorMessage.setText(" ");
 	}
 
-	private void enableDisableButtons() {
+	private void toggleDeletePlaylistButton() {
+		boolean isPlaylistSelected = comboBoxPlaylists.getSelectedIndex() != -1;
+
+		btnDeletePlaylist.setEnabled(isPlaylistSelected);
+	}
+
+	private void toggleAddToPlaylistButton() {
 		boolean isPlaylistSelected = comboBoxPlaylists.getSelectedIndex() != -1;
 		boolean isSongInStoreSelected = listSongsInStore.getSelectedIndex() != -1;
-		boolean isSongInPlaylistSelected = listSongsInPlaylist.getSelectedIndex() != -1;
 
 		btnDeletePlaylist.setEnabled(isPlaylistSelected);
 		btnAddToPlaylist.setEnabled(isPlaylistSelected && isSongInStoreSelected);
+	}
+
+	private void toggleRemoveFromPlaylistButton() {
+		boolean isPlaylistSelected = comboBoxPlaylists.getSelectedIndex() != -1;
+		boolean isSongInPlaylistSelected = listSongsInPlaylist.getSelectedIndex() != -1;
+
+		btnDeletePlaylist.setEnabled(isPlaylistSelected);
 		btnRemoveFromPlaylist.setEnabled(isPlaylistSelected && isSongInPlaylistSelected);
 	}
 }
