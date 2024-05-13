@@ -17,7 +17,15 @@ import io.github.davidedelbimbo.music_store.view.swing.CreatePlaylistDialog;
 import io.github.davidedelbimbo.music_store.view.swing.MusicStoreSwingView;
 
 @RunWith(GUITestRunner.class)
-public class MusicStoreViewAndCreatePlaylistDialogIT extends AssertJSwingJUnitTestCase {
+public class MusicStoreSwingViewAndCreatePlaylistDialogIT extends AssertJSwingJUnitTestCase {
+	private static final String COMBO_BOX_PLAYLISTS = "comboBoxPlaylists";
+
+	private static final String TXT_PLAYLIST_NAME = "txtPlaylistName";
+	private static final String BTN_CREATE_PLAYLIST = "btnCreatePlaylist";
+
+	private static final String PLAYLIST_NAME = "New Playlist";
+
+
 	private FrameFixture window;
 
 	private MusicStoreSwingView musicStoreSwingView;
@@ -41,7 +49,7 @@ public class MusicStoreViewAndCreatePlaylistDialogIT extends AssertJSwingJUnitTe
 
 	@Test @GUITest
 	public void testCreatePlaylistDialogShouldBeDisplayedWhenCreatePlaylistButtonIsClicked() {
-		window.button("btnCreatePlaylist").click();
+		window.button(BTN_CREATE_PLAYLIST).click();
 
 		// Check that the Create Playlist dialog is displayed.
 		window.dialog().requireVisible();
@@ -66,10 +74,10 @@ public class MusicStoreViewAndCreatePlaylistDialogIT extends AssertJSwingJUnitTe
 			return null;
 		}).when(musicStoreController).createPlaylist(any(Playlist.class));
 
-		dialog.textBox("txtPlaylistName").enterText("New Playlist");
-		dialog.button("btnCreatePlaylist").click();
+		dialog.textBox(TXT_PLAYLIST_NAME).enterText(PLAYLIST_NAME);
+		dialog.button(BTN_CREATE_PLAYLIST).click();
 
 		// Verify that playlist is added to the playlists combo box in the view.
-		window.comboBox("comboBoxPlaylists").requireSelection("New Playlist");
+		window.comboBox(COMBO_BOX_PLAYLISTS).requireSelection(PLAYLIST_NAME);
 	}
 }
