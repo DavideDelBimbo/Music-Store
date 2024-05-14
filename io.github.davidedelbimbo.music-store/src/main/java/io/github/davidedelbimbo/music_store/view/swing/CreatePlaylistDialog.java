@@ -1,15 +1,11 @@
 package io.github.davidedelbimbo.music_store.view.swing;
 
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
-import io.github.davidedelbimbo.music_store.model.Playlist;
-
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JButton;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -18,7 +14,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Color;
 
+import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
+import io.github.davidedelbimbo.music_store.model.Playlist;
+
 public class CreatePlaylistDialog extends JDialog {
+	public static final String LBL_PLAYLIST_NAME = "lblPlaylistName";
+	public static final String TXT_PLAYLIST_NAME = "txtPlaylistName";
+	public static final String BTN_CREATE_PLAYLIST_DIALOG = "btnCreatePlaylist";
+	public static final String BTN_CANCEL = "btnCancel";
+	public static final String LBL_ERROR_MESSAGE_DIALOG = "lblErrorMessage";
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,6 +34,10 @@ public class CreatePlaylistDialog extends JDialog {
 	private JLabel lblErrorMessage;
 
 	private transient MusicStoreController musicStoreController;
+
+	public JLabel getLblErrorMessage() {
+		return lblErrorMessage;
+	}
 
 	public void setMusicStoreController(MusicStoreController musicStoreController) {
 		this.musicStoreController = musicStoreController;
@@ -54,7 +62,7 @@ public class CreatePlaylistDialog extends JDialog {
 		contentPane.setLayout(gbl_contentPane);
 
 		lblName = new JLabel("Name");
-		lblName.setName("lblPlaylistName");
+		lblName.setName(LBL_PLAYLIST_NAME);
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
 		gbc_lblName.anchor = GridBagConstraints.EAST;
 		gbc_lblName.insets = new Insets(0, 0, 5, 5);
@@ -63,7 +71,7 @@ public class CreatePlaylistDialog extends JDialog {
 		contentPane.add(lblName, gbc_lblName);
 
 		txtName = new JTextField();
-		txtName.setName("txtPlaylistName");
+		txtName.setName(TXT_PLAYLIST_NAME);
 		GridBagConstraints gbc_txtName = new GridBagConstraints();
 		gbc_txtName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtName.insets = new Insets(0, 0, 5, 0);
@@ -83,7 +91,7 @@ public class CreatePlaylistDialog extends JDialog {
 
 		btnCreatePlaylist = new JButton("Create playlist");
 		btnCreatePlaylist.setEnabled(false);
-		btnCreatePlaylist.setName("btnCreatePlaylist");
+		btnCreatePlaylist.setName(BTN_CREATE_PLAYLIST_DIALOG);
 		GridBagConstraints gbc_btnCreatePlaylist = new GridBagConstraints();
 		gbc_btnCreatePlaylist.anchor = GridBagConstraints.WEST;
 		gbc_btnCreatePlaylist.insets = new Insets(0, 0, 5, 5);
@@ -93,12 +101,12 @@ public class CreatePlaylistDialog extends JDialog {
 
 		// Create playlist button listener.
 		btnCreatePlaylist.addActionListener(e -> {
-			musicStoreController.createPlaylist(new Playlist(txtName.getText()));
-			closeDialog();
+			Playlist playlist = new Playlist(txtName.getText());
+			musicStoreController.createPlaylist(playlist);
 		});
 
 		btnCancel = new JButton("Cancel");
-		btnCancel.setName("btnCancel");
+		btnCancel.setName(BTN_CANCEL);
 		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
 		gbc_btnCancel.anchor = GridBagConstraints.EAST;
 		gbc_btnCancel.insets = new Insets(0, 0, 5, 0);
@@ -107,27 +115,30 @@ public class CreatePlaylistDialog extends JDialog {
 		contentPane.add(btnCancel, gbc_btnCancel);
 
 		// Cancel button listener.
-		btnCancel.addActionListener(e -> closeDialog());
+		btnCancel.addActionListener(e -> this.setVisible(false));
 
 		lblErrorMessage = new JLabel(" ");
-		lblErrorMessage.setName("lblErrorMessage");
 		lblErrorMessage.setForeground(new Color(255, 0, 0));
+		lblErrorMessage.setName(LBL_ERROR_MESSAGE_DIALOG);
 		GridBagConstraints gbc_lblErrorMessage = new GridBagConstraints();
-		gbc_lblErrorMessage.insets = new Insets(0, 0, 0, 5);
 		gbc_lblErrorMessage.gridwidth = 4;
+		gbc_lblErrorMessage.insets = new Insets(0, 0, 0, 5);
 		gbc_lblErrorMessage.gridx = 0;
 		gbc_lblErrorMessage.gridy = 2;
 		contentPane.add(lblErrorMessage, gbc_lblErrorMessage);
 	}
 
-
-	public void displayError(String message) {
-		lblErrorMessage.setText(message);
+	public void displayErrorMessage(String errorMessage) {
+		lblErrorMessage.setText(errorMessage);
 	}
 
-
-	// Helper methods.
-	private void closeDialog() {
-		this.dispose();
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			txtName.setText("");
+			btnCreatePlaylist.setEnabled(false);
+			lblErrorMessage.setText(" ");
+		}
+		super.setVisible(visible);
 	}
 }
