@@ -2,7 +2,6 @@ package io.github.davidedelbimbo.music_store.repository.mongo;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,8 +18,9 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import io.github.davidedelbimbo.music_store.model.Song;
+import static io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository.*;
 import io.github.davidedelbimbo.music_store.model.Playlist;
+import io.github.davidedelbimbo.music_store.model.Song;
 
 /*
  * Run docker run -p 27017:27017 --rm mongo:6.0.14 to start a MongoDB container.
@@ -45,17 +45,17 @@ public class MusicStoreMongoRepositoryIT {
 	@Before
 	public void setUp() {
 		client = new MongoClient(new ServerAddress("localhost", mongoPort));
-		musicStoreRepository = new MusicStoreMongoRepository(client);
-		
+		musicStoreRepository = new MusicStoreMongoRepository(client, STORE_DB_NAME, SONG_COLLECTION_NAME, PLAYLIST_COLLECTION_NAME);
+
 		// Start with a clean database.
-		MongoDatabase database = client.getDatabase(MusicStoreMongoRepository.STORE_DB_NAME);
+		MongoDatabase database = client.getDatabase(STORE_DB_NAME);
 		database.drop();
-		
+
 		// Get the song collection.
-		songCollection = database.getCollection(MusicStoreMongoRepository.SONG_COLLECTION_NAME);
-		
+		songCollection = database.getCollection(SONG_COLLECTION_NAME);
+
 		// Get the playlist collection.
-		playlistCollection = database.getCollection(MusicStoreMongoRepository.PLAYLIST_COLLECTION_NAME);
+		playlistCollection = database.getCollection(PLAYLIST_COLLECTION_NAME);
 	}
 
 	@After
@@ -65,37 +65,37 @@ public class MusicStoreMongoRepositoryIT {
 
 	@Test
 	public void testFindAllSongsWhenDatabaseIsEmpty() {
-		assertThat(this.musicStoreRepository.findAllSongs())
+		assertThat(musicStoreRepository.findAllSongs())
 			.isEmpty();
 	}
 
 	@Test
 	public void testFindAllSongs() {
 		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-
 		addTestSongToDatabase(song1);
+
+		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
 		addTestSongToDatabase(song2);
 
-		assertThat(this.musicStoreRepository.findAllSongs())
+		assertThat(musicStoreRepository.findAllSongs())
 			.containsExactly(song1, song2);
 	}
 
 	@Test
 	public void testFindSongByIdWhenSongDoesNotExist() {
-		assertThat(this.musicStoreRepository.findSongById(SONG_1_ID))
+		assertThat(musicStoreRepository.findSongById(SONG_1_ID))
 			.isNull();
 	}
 
 	@Test
 	public void testFindSongByIdWhenSongExists() {
 		Song song = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song songToFind = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-
 		addTestSongToDatabase(song);
+
+		Song songToFind = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
 		addTestSongToDatabase(songToFind);
 
-		assertThat(this.musicStoreRepository.findSongById(SONG_2_ID))
+		assertThat(musicStoreRepository.findSongById(SONG_2_ID))
 			.isEqualTo(songToFind);
 	}
 
@@ -112,7 +112,6 @@ public class MusicStoreMongoRepositoryIT {
 	@Test
 	public void testRemoveSong() {
 		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-
 		addTestSongToDatabase(songToRemove);
 
 		musicStoreRepository.removeSong(songToRemove);
@@ -123,72 +122,71 @@ public class MusicStoreMongoRepositoryIT {
 
 	@Test
 	public void testFindAllPlaylistsWhenDatabaseIsEmpty() {
-		assertThat(this.musicStoreRepository.findAllPlaylists())
+		assertThat(musicStoreRepository.findAllPlaylists())
 			.isEmpty();
 	}
 
 	@Test
 	public void testFindAllPlaylists() {
-		ArrayList<Song> songsPlaylist1 = new ArrayList<>(Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
-		Playlist playlist1 = new Playlist(PLAYLIST_1_NAME, songsPlaylist1);
+		Playlist playlist1 = new Playlist(PLAYLIST_1_NAME, Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
+		addTestPlaylistToDatabase(playlist1);
 
 		Playlist playlist2 = new Playlist(PLAYLIST_2_NAME);
-
-		addTestPlaylistToDatabase(playlist1);
 		addTestPlaylistToDatabase(playlist2);
 
-		assertThat(this.musicStoreRepository.findAllPlaylists())
+		assertThat(musicStoreRepository.findAllPlaylists())
 			.containsExactly(playlist1, playlist2);
+		assertThat(musicStoreRepository.findAllPlaylists().get(0).getSongs())
+			.containsExactly(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+		assertThat(musicStoreRepository.findAllPlaylists().get(1).getSongs())
+			.isEmpty();
 	}
 
 	@Test
 	public void testFindPlaylistByNameWhenPlaylistDoesNotExist() {
-		assertThat(this.musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME))
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME))
 			.isNull();
 	}
 
 	@Test
 	public void testFindPlaylistByNameWhenPlaylistExists() {
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-
-		ArrayList<Song> songsPlaylistToFind = new ArrayList<>(Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
-		Playlist playlistToFind = new Playlist(PLAYLIST_2_NAME, songsPlaylistToFind);
-
 		addTestPlaylistToDatabase(playlist);
+
+		Playlist playlistToFind = new Playlist(PLAYLIST_2_NAME, Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
 		addTestPlaylistToDatabase(playlistToFind);
 
-		assertThat(this.musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME))
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME))
 			.isEqualTo(playlistToFind);
-		assertThat(this.musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME).getSongs())
-			.isEqualTo(songsPlaylistToFind);
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME).getSongs())
+			.containsExactly(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 	}
 
 	@Test
 	public void testCreatePlaylist() {
-		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
+		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME, Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
 
 		musicStoreRepository.createPlaylist(playlistToCreate);
 
 		assertThat(readAllPlaylistsFromDatabase())
 			.containsExactly(playlistToCreate);
+		assertThat(readAllPlaylistsFromDatabase().get(0).getSongs())
+			.containsExactly(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
 	}
 
 	@Test
 	public void testUpdatePlaylist() {
-		List<Song> songsPlaylistToUpdate = new ArrayList<>(Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
-		Playlist playlistToUpdate = new Playlist(PLAYLIST_1_NAME, songsPlaylistToUpdate);
-
+		Playlist playlistToUpdate = new Playlist(PLAYLIST_1_NAME, Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
 		addTestPlaylistToDatabase(playlistToUpdate);
 
-		List<Song> songsPlaylistUpdated = new ArrayList<>(Arrays.asList(new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST)));
-		Playlist playlistUpdated = new Playlist(PLAYLIST_1_NAME, songsPlaylistUpdated);
+		Playlist playlistUpdated = new Playlist(PLAYLIST_1_NAME, Arrays.asList(new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST)));
 
 		musicStoreRepository.updatePlaylist(playlistUpdated);
 
 		assertThat(readAllPlaylistsFromDatabase())
 			.containsExactly(playlistUpdated);
 		assertThat(readAllPlaylistsFromDatabase().get(0).getSongs())
-			.isEqualTo(songsPlaylistUpdated);
+			.containsExactly(new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST));
 	}
 
 	@Test
@@ -206,45 +204,45 @@ public class MusicStoreMongoRepositoryIT {
 
 	// Helper methods.
 	private void addTestSongToDatabase(Song song) {
-		this.songCollection.insertOne(
+		songCollection.insertOne(
 			new Document()
-				.append(MusicStoreMongoRepository.ID_FIELD, song.getId())
-				.append(MusicStoreMongoRepository.TITLE_FIELD, song.getTitle())
-				.append(MusicStoreMongoRepository.ARTIST_FIELD, song.getArtist()));
+				.append(ID_FIELD, song.getId())
+				.append(TITLE_FIELD, song.getTitle())
+				.append(ARTIST_FIELD, song.getArtist()));
 	}
 
 	private void addTestPlaylistToDatabase(Playlist playlist) {
-		this.playlistCollection.insertOne(
+		playlistCollection.insertOne(
 				new Document()
-				.append(MusicStoreMongoRepository.TITLE_FIELD, playlist.getName())
-				.append(MusicStoreMongoRepository.SONGS_FIELD, playlist.getSongs().stream()
+				.append(TITLE_FIELD, playlist.getName())
+				.append(SONGS_FIELD, playlist.getSongs().stream()
 					.map(song -> new Document()
-						.append(MusicStoreMongoRepository.ID_FIELD, song.getId())
-						.append(MusicStoreMongoRepository.TITLE_FIELD, song.getTitle())
-						.append(MusicStoreMongoRepository.ARTIST_FIELD, song.getArtist()))
+						.append(ID_FIELD, song.getId())
+						.append(TITLE_FIELD, song.getTitle())
+						.append(ARTIST_FIELD, song.getArtist()))
 					.collect(Collectors.toList())));
 	}
 
 	private List<Song> readAllSongsFromDatabase() {
 		return StreamSupport
-			.stream(this.songCollection.find().spliterator(), false)
+			.stream(songCollection.find().spliterator(), false)
 			.map(songDocument -> new Song(
-				songDocument.getInteger(MusicStoreMongoRepository.ID_FIELD),
-				songDocument.getString(MusicStoreMongoRepository.TITLE_FIELD),
-				songDocument.getString(MusicStoreMongoRepository.ARTIST_FIELD)))
+				songDocument.getInteger(ID_FIELD),
+				songDocument.getString(TITLE_FIELD),
+				songDocument.getString(ARTIST_FIELD)))
 			.collect(Collectors.toList());
 	}
 
 	private List<Playlist> readAllPlaylistsFromDatabase() {
 		return StreamSupport
-			.stream(this.playlistCollection.find().spliterator(), false)
+			.stream(playlistCollection.find().spliterator(), false)
 			.map(playlistDocument -> new Playlist(
-				playlistDocument.getString(MusicStoreMongoRepository.TITLE_FIELD),
-				playlistDocument.getList(MusicStoreMongoRepository.SONGS_FIELD, Document.class).stream()
+				playlistDocument.getString(TITLE_FIELD),
+				playlistDocument.getList(SONGS_FIELD, Document.class).stream()
 					.map(songDocument -> new Song(
-						songDocument.getInteger(MusicStoreMongoRepository.ID_FIELD),
-						songDocument.getString(MusicStoreMongoRepository.TITLE_FIELD),
-						songDocument.getString(MusicStoreMongoRepository.ARTIST_FIELD)))
+						songDocument.getInteger(ID_FIELD),
+						songDocument.getString(TITLE_FIELD),
+						songDocument.getString(ARTIST_FIELD)))
 					.collect(Collectors.toList())))
 				.collect(Collectors.toList());
 	}

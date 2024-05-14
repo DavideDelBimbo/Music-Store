@@ -2,10 +2,10 @@ package io.github.davidedelbimbo.music_store.controller;
 
 import java.util.List;
 
-import io.github.davidedelbimbo.music_store.model.Playlist;
-import io.github.davidedelbimbo.music_store.model.Song;
 import io.github.davidedelbimbo.music_store.repository.MusicStoreRepository;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
+import io.github.davidedelbimbo.music_store.model.Playlist;
+import io.github.davidedelbimbo.music_store.model.Song;
 
 public class MusicStoreController {
 	public static final String SONG_NOT_FOUND_MSG = "Song not found: ";
@@ -34,7 +34,7 @@ public class MusicStoreController {
 
 	public void createPlaylist(Playlist playlist) {
 		// Check if playlist already exists.
-		if (musicStoreRepository.findPlaylistByName(playlist.getName()) != null) {
+		if (Boolean.TRUE.equals(isPlaylistExists(playlist))) {
 			musicStoreView.displayError(PLAYLIST_ALREADY_EXISTS_MSG + playlist);
 			return;
 		}
@@ -46,7 +46,7 @@ public class MusicStoreController {
 
 	public void deletePlaylist(Playlist playlist) {
 		// Check if playlist exists.
-		if (musicStoreRepository.findPlaylistByName(playlist.getName()) == null) {
+		if (Boolean.FALSE.equals(isPlaylistExists(playlist))) {
 			musicStoreView.displayError(PLAYLIST_NOT_FOUND_MSG + playlist);
 			return;
 		}
@@ -57,22 +57,28 @@ public class MusicStoreController {
 	}
 
 	public void allSongsInPlaylist(Playlist playlist) {
-		List<Song> songs = musicStoreRepository.findPlaylistByName(playlist.getName()).getSongs();
-		musicStoreView.displayAllSongsInPlaylist(songs);
-	}
-
-	public void addSongInPlaylist(Playlist playlist, Song song) {
-		// Check if playlist exists.
-		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
-		if (playlistToUpdate == null) {
+		Playlist foundPlaylist = musicStoreRepository.findPlaylistByName(playlist.getName());
+		if (foundPlaylist == null) {
 			musicStoreView.displayError(PLAYLIST_NOT_FOUND_MSG + playlist);
 			return;
 		}
 
+		List<Song> songs = foundPlaylist.getSongs();
+		musicStoreView.displayAllSongsInPlaylist(songs);
+	}
+
+	public void addSongToPlaylist(Playlist playlist, Song song) {
 		// Check if song exists.
 		Song songToAdd = musicStoreRepository.findSongById(song.getId());
 		if (songToAdd == null) {
 			musicStoreView.displayError(SONG_NOT_FOUND_MSG + song);
+			return;
+		}
+
+		// Check if playlist exists.
+		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
+		if (playlistToUpdate == null) {
+			musicStoreView.displayError(PLAYLIST_NOT_FOUND_MSG + playlist);
 			return;
 		}
 
@@ -89,17 +95,17 @@ public class MusicStoreController {
 	}
 
 	public void removeSongFromPlaylist(Playlist playlist, Song song) {
-		// Check if playlist exists.
-		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
-		if (playlistToUpdate == null) {
-			musicStoreView.displayError(PLAYLIST_NOT_FOUND_MSG + playlist);
-			return;
-		}
-
 		// Check if song exists.
 		Song songToRemove = musicStoreRepository.findSongById(song.getId());
 		if (songToRemove == null) {
 			musicStoreView.displayError(SONG_NOT_FOUND_MSG + song);
+			return;
+		}
+
+		// Check if playlist exists.
+		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
+		if (playlistToUpdate == null) {
+			musicStoreView.displayError(PLAYLIST_NOT_FOUND_MSG + playlist);
 			return;
 		}
 
@@ -113,5 +119,11 @@ public class MusicStoreController {
 		playlistToUpdate.removeSong(songToRemove);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
 		musicStoreView.hideSongFromPlaylist(songToRemove);
+	}
+
+
+	// Helper methods.
+	public Boolean isPlaylistExists(Playlist playlist) {
+		return musicStoreRepository.findPlaylistByName(playlist.getName()) != null;
 	}
 }

@@ -10,9 +10,9 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 
+import io.github.davidedelbimbo.music_store.repository.MusicStoreRepository;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
-import io.github.davidedelbimbo.music_store.repository.MusicStoreRepository;
 
 public class MusicStoreMongoRepository implements MusicStoreRepository {
 	public static final String STORE_DB_NAME = "music_store";
@@ -28,9 +28,9 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 	private MongoCollection<Document> songCollection;
 	private MongoCollection<Document> playlistCollection;
 
-	public MusicStoreMongoRepository(MongoClient client) {
-		this.songCollection = client.getDatabase(STORE_DB_NAME).getCollection(SONG_COLLECTION_NAME);
-		this.playlistCollection = client.getDatabase(STORE_DB_NAME).getCollection(PLAYLIST_COLLECTION_NAME);
+	public MusicStoreMongoRepository(MongoClient client, String database, String songCollection, String playlistCollection) {
+		this.songCollection = client.getDatabase(database).getCollection(songCollection);
+		this.playlistCollection = client.getDatabase(database).getCollection(playlistCollection);
 	}
 
 	@Override
