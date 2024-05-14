@@ -5,17 +5,16 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import org.mockito.InOrder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import io.github.davidedelbimbo.music_store.model.Playlist;
-import io.github.davidedelbimbo.music_store.model.Song;
+import static io.github.davidedelbimbo.music_store.controller.MusicStoreController.*;
 import io.github.davidedelbimbo.music_store.repository.MusicStoreRepository;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
+import io.github.davidedelbimbo.music_store.model.Playlist;
+import io.github.davidedelbimbo.music_store.model.Song;
 
 public class MusicStoreControllerTest {
 	private static Integer SONG_1_ID = 1;
@@ -43,29 +42,29 @@ public class MusicStoreControllerTest {
 	public void testAllSongs() {
 		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-		List<Song> songs = new ArrayList<Song>(Arrays.asList(song1, song2));
-		when(musicStoreRepository.findAllSongs()).thenReturn(songs);
+		when(musicStoreRepository.findAllSongs()).thenReturn(Arrays.asList(song1, song2));
 
 		musicStoreController.allSongs();
 
-		verify(musicStoreView).displayAllSongsInStore(songs);
+		verify(musicStoreView).displayAllSongsInStore(Arrays.asList(song1, song2));
 	}
 
 	@Test
 	public void testAllPlaylists() {
-		List<Playlist> playlists = Arrays.asList(new Playlist(PLAYLIST_1_NAME), new Playlist(PLAYLIST_2_NAME));
-		when(musicStoreRepository.findAllPlaylists()).thenReturn(playlists);
+		Playlist playlist1 = new Playlist(PLAYLIST_1_NAME);
+		Playlist playlist2 = new Playlist(PLAYLIST_2_NAME);
+		when(musicStoreRepository.findAllPlaylists()).thenReturn(Arrays.asList(playlist1, playlist2));
 
 		musicStoreController.allPlaylists();
 
-		verify(musicStoreView).displayAllPlaylists(playlists);
+		verify(musicStoreView).displayAllPlaylists(Arrays.asList(playlist1, playlist2));
 	}
 
 	@Test
 	public void testCreatePlaylistWhenPlaylistDoesNotAlreadyExist() {
-		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
 
+		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.createPlaylist(playlistToCreate);
 
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
@@ -76,21 +75,21 @@ public class MusicStoreControllerTest {
 	@Test
 	public void testCreatePlaylistWhenPlaylistAlreadyExists() {
 		Playlist existingPlaylist = new Playlist(PLAYLIST_1_NAME);
-		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(existingPlaylist);
 
+		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.createPlaylist(playlistToCreate);
 
-		verify(musicStoreView).displayError(MusicStoreController.PLAYLIST_ALREADY_EXISTS_MSG + PLAYLIST_1_NAME);
+		verify(musicStoreView).displayError(PLAYLIST_ALREADY_EXISTS_MSG + PLAYLIST_1_NAME);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
 	@Test
 	public void testDeletePlaylistWhenPlaylistExists() {
 		Playlist existingPlaylist = new Playlist(PLAYLIST_1_NAME);
-		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(existingPlaylist);
 
+		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.deletePlaylist(playlistToDelete);
 
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
@@ -100,147 +99,157 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testDeletePlaylistWhenPlaylistDoesNotExist() {
-		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
 
+		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.deletePlaylist(playlistToDelete);
 
-		verify(musicStoreView).displayError(MusicStoreController.PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
 	@Test
-	public void testAllSongsInPlaylist() {
+	public void testAllSongsInPlaylistWhenPlaylistExists() {
 		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-		List<Song> songs = new ArrayList<Song>(Arrays.asList(song1, song2));
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME, songs);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(song1, song2));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
 		musicStoreController.allSongsInPlaylist(playlist);
 
-		verify(musicStoreView).displayAllSongsInPlaylist(songs);
+		verify(musicStoreView).displayAllSongsInPlaylist(Arrays.asList(song1, song2));
 	}
 
 	@Test
-	public void testAddSongInPlaylistWhenPlaylistDoesNotExist() {
+	public void testAllSongsInPlaylistWhenPlaylistDoesNotExist() {
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
+
+		musicStoreController.allSongsInPlaylist(playlist);
+
+		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
+	}
+
+	@Test
+	public void testAddSongToPlaylistWhenSongDoesNotAlreadyInPlaylist() {
+		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
 
-		musicStoreController.addSongToPlaylist(playlist, songToAdd);
-
-		verify(musicStoreView).displayError(MusicStoreController.PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
-		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
-	}
-
-	@Test
-	public void testAddSongInPlaylistWhenSongDoesNotExist() {
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(null);
-
-		musicStoreController.addSongToPlaylist(playlist, songToAdd);
-
-		verify(musicStoreView)
-			.displayError(MusicStoreController.SONG_NOT_FOUND_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
-		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
-	}
-
-	@Test
-	public void testAddSongInPlaylistWhenSongAlreadyInPlaylist() {
-		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		List<Song> songs = new ArrayList<Song>(Arrays.asList(existingSong));
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME, songs);
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
-
-		musicStoreController.addSongToPlaylist(playlist, songToAdd);
-
-		verify(musicStoreView)
-			.displayError(MusicStoreController.SONG_ALREADY_IN_PLAYLIST_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
-		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
-	}
-
-	@Test
-	public void testAddSongInPlaylistWhenSongDoesNotAlreadyInPlaylist() {
 		Song existingSong = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-		List<Song> songs = new ArrayList<Song>(Arrays.asList(existingSong));
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME, songs);
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
 
-    musicStoreController.addSongToPlaylist(playlist, songToAdd);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
-		assertThat(playlist.getSongs())
-			.containsExactly(existingSong, songToAdd);
+		assertThat(playlist.getSongs()).containsExactly(existingSong, songToAdd);
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
 		inOrder.verify(musicStoreView).displaySongInPlaylist(songToAdd);
 	}
 
 	@Test
-	public void testRemoveSongFromPlaylistWhenPlaylistDoesNotExist() {
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
-
-		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
-
-		verify(musicStoreView).displayError(MusicStoreController.PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
-		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
-	}
-
-	@Test
-	public void testRemoveSongFromPlaylistWhenSongDoesNotExist() {
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
+	public void testAddSongToPlaylistWhenSongDoesNotExist() {
+		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(null);
 
-		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
-		verify(musicStoreView)
-			.displayError(MusicStoreController.SONG_NOT_FOUND_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
+
+		verify(musicStoreView).displayError(SONG_NOT_FOUND_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
 	@Test
-	public void testRemoveSongFromPlaylistWhenSongDoesNotExistInPlaylist() {
-		Song existingSong = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-		List<Song> songs = new ArrayList<Song>(Arrays.asList(existingSong));
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME, songs);
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+	public void testAddSongToPlaylistWhenPlaylistDoesNotExist() {
+		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
+
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
+
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
+
+		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
+	}
+
+	@Test
+	public void testAddSongToPlaylistWhenSongAlreadyInPlaylist() {
+		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
+
+		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
 
-		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
+		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
-		verify(musicStoreView)
-				.displayError(MusicStoreController.SONG_NOT_FOUND_IN_PLAYLIST_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
+		assertThat(playlist.getSongs()).containsExactly(existingSong);
+		verify(musicStoreView).displayError(SONG_ALREADY_IN_PLAYLIST_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
 	@Test
 	public void testRemoveSongFromPlaylistWhenSongExistsInPlaylist() {
-		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		List<Song> songs = new ArrayList<Song>(Arrays.asList(existingSong));
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME, songs);
 		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
+
+		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
+		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
 
-		assertThat(playlist.getSongs())
-			.isEmpty();
+		assertThat(playlist.getSongs()).isEmpty();
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
 		inOrder.verify(musicStoreView).hideSongFromPlaylist(songToRemove);
+	}
+
+	@Test
+	public void testRemoveSongFromPlaylistWhenSongDoesNotExist() {
+		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(null);
+
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
+
+		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
+
+		verify(musicStoreView).displayError(SONG_NOT_FOUND_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
+		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
+	}
+
+	@Test
+	public void testRemoveSongFromPlaylistWhenPlaylistDoesNotExist() {
+		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
+
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
+
+		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
+
+		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
+	}
+
+	@Test
+	public void testRemoveSongFromPlaylistWhenSongDoesNotExistInPlaylist() {
+		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
+
+		Song existingSong = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
+		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
+
+		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
+
+		assertThat(playlist.getSongs()).containsExactly(existingSong);
+		verify(musicStoreView).displayError(SONG_NOT_FOUND_IN_PLAYLIST_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
+		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 }
