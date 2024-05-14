@@ -15,7 +15,7 @@ public class Playlist {
 
 	public Playlist(String name, List<Song> songs) {
 		this.name = name;
-		this.songs = songs;
+		this.songs = new ArrayList<>(songs);
 	}
 
 	public String getName() {
