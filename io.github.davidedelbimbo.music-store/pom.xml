@@ -66,8 +66,7 @@
       java:S2699
     </sonar.issue.ignore.multicriteria.e2.ruleKey>
     <sonar.issue.ignore.multicriteria.e2.resourceKey>
-      **/swing/*Test*,
-      **/swing/*IT*
+      **/swing/*
     </sonar.issue.ignore.multicriteria.e2.resourceKey>
   </properties>
 
