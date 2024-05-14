@@ -19,12 +19,21 @@ import java.awt.Color;
 
 import java.util.List;
 
-import io.github.davidedelbimbo.music_store.model.Song;
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
-import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
+import io.github.davidedelbimbo.music_store.model.Playlist;
+import io.github.davidedelbimbo.music_store.model.Song;
 
 public class MusicStoreSwingView extends JFrame implements MusicStoreView {
+	public static final String LBL_SELECT_PLAYLIST = "lblSelectPlaylist";
+	public static final String COMBO_BOX_PLAYLISTS = "comboBoxPlaylists";
+	public static final String BTN_CREATE_PLAYLIST_VIEW = "btnCreatePlaylist";
+	public static final String BTN_DELETE_PLAYLIST = "btnDeletePlaylist";
+	public static final String LIST_SONGS_IN_STORE = "listSongsInStore";
+	public static final String LIST_SONGS_IN_PLAYLIST = "listSongsInPlaylist";	
+	public static final String BTN_ADD_TO_PLAYLIST = "btnAddToPlaylist";
+	public static final String BTN_REMOVE_FROM_PLAYLIST = "btnRemoveFromPlaylist";
+	public static final String LBL_ERROR_MESSAGE_VIEW = "lblErrorMessage";
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +55,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	private DefaultListModel<Song> listSongsInPlaylistModel;
 
 	private transient MusicStoreController musicStoreController;
+	private CreatePlaylistDialog createPlaylistDialog;
 
 	public DefaultComboBoxModel<Playlist> getComboBoxPlaylistsModel() {
 		return comboBoxPlaylistsModel;
@@ -66,7 +76,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	/**
 	 * Create the frame.
 	 */
-	public MusicStoreSwingView() {
+	public MusicStoreSwingView(CreatePlaylistDialog createPlaylistDialog) {
+		this.createPlaylistDialog = createPlaylistDialog;
+
 		setTitle("Music Store View");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -82,7 +94,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		contentPane.setLayout(gbl_contentPane);
 
 		lblSelectPlaylist = new JLabel("Select a playlist");
-		lblSelectPlaylist.setName("lblSelectPlaylist");
+		lblSelectPlaylist.setName(LBL_SELECT_PLAYLIST);
 		GridBagConstraints gbc_lblSelectPlaylist = new GridBagConstraints();
 		gbc_lblSelectPlaylist.anchor = GridBagConstraints.EAST;
 		gbc_lblSelectPlaylist.insets = new Insets(0, 0, 5, 5);
@@ -92,7 +104,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		comboBoxPlaylistsModel = new DefaultComboBoxModel<>();
 		comboBoxPlaylists = new JComboBox<>(comboBoxPlaylistsModel);
-		comboBoxPlaylists.setName("comboBoxPlaylists");
+		comboBoxPlaylists.setName(COMBO_BOX_PLAYLISTS);
 		GridBagConstraints gbc_comboBoxPlaylists = new GridBagConstraints();
 		gbc_comboBoxPlaylists.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBoxPlaylists.insets = new Insets(0, 0, 5, 0);
@@ -119,7 +131,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		});
 
 		btnCreatePlaylist = new JButton("Create new playlist");
-		btnCreatePlaylist.setName("btnCreatePlaylist");
+		btnCreatePlaylist.setName(BTN_CREATE_PLAYLIST_VIEW);
 		GridBagConstraints gbc_btnCreatePlaylist = new GridBagConstraints();
 		gbc_btnCreatePlaylist.anchor = GridBagConstraints.WEST;
 		gbc_btnCreatePlaylist.insets = new Insets(0, 0, 5, 5);
@@ -128,11 +140,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		contentPane.add(btnCreatePlaylist, gbc_btnCreatePlaylist);
 
 		// Create playlist button listener.
-		btnCreatePlaylist.addActionListener(e -> new CreatePlaylistDialog().setVisible(true));
+		btnCreatePlaylist.addActionListener(e -> createPlaylistDialog.setVisible(true));
 
 		btnDeletePlaylist = new JButton("Delete selcted playlist");
 		btnDeletePlaylist.setEnabled(false);
-		btnDeletePlaylist.setName("btnDeletePlaylist");
+		btnDeletePlaylist.setName(BTN_DELETE_PLAYLIST);
 		GridBagConstraints gbc_btnDeletePlaylist = new GridBagConstraints();
 		gbc_btnDeletePlaylist.anchor = GridBagConstraints.EAST;
 		gbc_btnDeletePlaylist.insets = new Insets(0, 0, 5, 0);
@@ -158,7 +170,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		listSongsInStoreModel = new DefaultListModel<>();
 		listSongsInStore = new JList<>(listSongsInStoreModel);
-		listSongsInStore.setName("listSongsInStore");
+		listSongsInStore.setName(LIST_SONGS_IN_STORE);
 		listSongsInStore.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneSongsInStore.setViewportView(listSongsInStore);
 
@@ -182,7 +194,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		listSongsInPlaylistModel = new DefaultListModel<>();
 		listSongsInPlaylist = new JList<>(listSongsInPlaylistModel);
-		listSongsInPlaylist.setName("listSongsInPlaylist");
+		listSongsInPlaylist.setName(LIST_SONGS_IN_PLAYLIST);
 		listSongsInPlaylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneSongsInPlaylist.setViewportView(listSongsInPlaylist);
 
@@ -198,7 +210,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		btnAddToPlaylist = new JButton("Add to playlist");
 		btnAddToPlaylist.setEnabled(false);
-		btnAddToPlaylist.setName("btnAddToPlaylist");
+		btnAddToPlaylist.setName(BTN_ADD_TO_PLAYLIST);
 		GridBagConstraints gbc_btnAddToPlaylist = new GridBagConstraints();
 		gbc_btnAddToPlaylist.anchor = GridBagConstraints.WEST;
 		gbc_btnAddToPlaylist.insets = new Insets(0, 0, 5, 5);
@@ -216,7 +228,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		btnRemoveFromPlaylist = new JButton("Remove from playlist");
 		btnRemoveFromPlaylist.setEnabled(false);
-		btnRemoveFromPlaylist.setName("btnRemoveFromPlaylist");
+		btnRemoveFromPlaylist.setName(BTN_REMOVE_FROM_PLAYLIST);
 		GridBagConstraints gbc_btnRemoveFromPlaylist = new GridBagConstraints();
 		gbc_btnRemoveFromPlaylist.anchor = GridBagConstraints.EAST;
 		gbc_btnRemoveFromPlaylist.insets = new Insets(0, 0, 5, 0);
@@ -233,7 +245,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		});
 
 		lblErrorMessage = new JLabel(" ");
-		lblErrorMessage.setName("lblErrorMessage");
+		lblErrorMessage.setName(LBL_ERROR_MESSAGE_VIEW);
 		lblErrorMessage.setForeground(new Color(255, 0, 0));
 		GridBagConstraints gbc_lblErrorMessage = new GridBagConstraints();
 		gbc_lblErrorMessage.insets = new Insets(0, 0, 0, 5);
@@ -261,6 +273,10 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void displayPlaylist(Playlist playlist) {
+		// Close dialog.
+		createPlaylistDialog.setVisible(false);
+
+		// Add playlist to combo box, select it and reset error label.
 		comboBoxPlaylistsModel.addElement(playlist);
 		comboBoxPlaylists.setSelectedItem(playlist);
 		resetErrorLabel();
@@ -287,7 +303,13 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void displayError(String message) {
-		lblErrorMessage.setText(message);
+		if (createPlaylistDialog.isVisible()) {
+			// Display error in dialog.
+			createPlaylistDialog.displayErrorMessage(message);
+		} else {
+			// Display error in main view.
+			lblErrorMessage.setText(message);
+		}
 	}
 
 
