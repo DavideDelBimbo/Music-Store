@@ -49,6 +49,13 @@ public class MusicStoreSwingViewAndCreatePlaylistDialogIT extends AssertJSwingJU
 		window.show();
 	}
 
+	@Override
+	protected void onTearDown() {
+		if (dialog != null){
+			dialog.cleanUp();
+		}
+	}
+
 	@Test @GUITest
 	public void testCreateButtonInViewShouldDisplayCreatePlaylistDialog() {
 		window.button(BTN_CREATE_PLAYLIST_VIEW).click();
