@@ -168,6 +168,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.list(LIST_SONGS_IN_STORE).requireNoSelection();
+		window.list(LIST_SONGS_IN_PLAYLIST).requireSelection(0);
 	}
 
 	@Test @GUITest
@@ -180,6 +181,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.list(LIST_SONGS_IN_PLAYLIST).requireNoSelection();
+		window.list(LIST_SONGS_IN_STORE).requireSelection(0);
 	}
 
 
