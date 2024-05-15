@@ -150,11 +150,14 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testUnselectingAPlaylistShouldClearThePlaylistList() {
-		GuiActionRunner.execute(() -> 
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
+	public void testChangingPlaylistShouldClearTheSongsInPlaylistList() {
+		GuiActionRunner.execute(() -> {
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_2_NAME));
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+		});
 
-		window.comboBox(COMBO_BOX_PLAYLISTS).clearSelection();
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_2_NAME);
 		window.list(LIST_SONGS_IN_PLAYLIST).requireItemCount(0);
 	}
 
@@ -168,6 +171,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.list(LIST_SONGS_IN_STORE).requireNoSelection();
+		window.list(LIST_SONGS_IN_PLAYLIST).requireSelection(0);
 	}
 
 	@Test @GUITest
@@ -180,6 +184,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.list(LIST_SONGS_IN_PLAYLIST).requireNoSelection();
+		window.list(LIST_SONGS_IN_STORE).requireSelection(0);
 	}
 
 
