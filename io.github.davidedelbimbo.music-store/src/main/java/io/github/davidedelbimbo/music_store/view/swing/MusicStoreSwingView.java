@@ -122,13 +122,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			toggleAddToPlaylistButton();
 			toggleRemoveFromPlaylistButton();
 
-			if (comboBoxPlaylists.getSelectedIndex() != -1) {
-				// Display all songs in selected playlist.
-				Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+			listSongsInPlaylistModel.clear();
+			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+			if (playlist != null) {
+				// Display songs in selected playlist.
 				musicStoreController.allSongsInPlaylist(playlist);
-			} else {
-				// Clear the list of songs in playlist.
-				listSongsInPlaylistModel.clear();
 			}
 		});
 
@@ -182,7 +180,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			toggleAddToPlaylistButton();
 
 			// Selecting a song in store list should clear the selection in playlist list.
-			listSongsInPlaylist.clearSelection();
+			if (listSongsInStore.getSelectedIndex() != -1) {
+				listSongsInPlaylist.clearSelection();
+			}
 		});
 
 		scrollPaneSongsInPlaylist = new JScrollPane();
@@ -206,7 +206,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			toggleRemoveFromPlaylistButton();
 
 			// Selecting a song in playlist list should clear the selection in store list.
-			listSongsInStore.clearSelection();
+			if (listSongsInPlaylist.getSelectedIndex() != -1) {
+				listSongsInStore.clearSelection();
+			}
 		});
 
 		btnAddToPlaylist = new JButton("Add to playlist");
