@@ -12,6 +12,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
 import static io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository.*;
+
 import io.github.davidedelbimbo.music_store.repository.MusicStoreRepository;
 import io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;

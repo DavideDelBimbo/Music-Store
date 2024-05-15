@@ -27,6 +27,7 @@ import static io.github.davidedelbimbo.music_store.controller.MusicStoreControll
 import static io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository.*;
 import static io.github.davidedelbimbo.music_store.view.swing.MusicStoreSwingView.*;
 import static io.github.davidedelbimbo.music_store.view.swing.CreatePlaylistDialog.*;
+
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.repository.MusicStoreRepository;
 import io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository;
@@ -88,7 +89,6 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView = new MusicStoreSwingView(createPlaylistDialog);
 			musicStoreController = new MusicStoreController(musicStoreSwingView, musicStoreRepository);
 			musicStoreSwingView.setMusicStoreController(musicStoreController);
-			createPlaylistDialog.setMusicStoreController(musicStoreController);
 			return musicStoreSwingView;
 		});
 
@@ -177,7 +177,7 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.button(BTN_DELETE_PLAYLIST).click();
 
 		// Verify that playlist is deleted.
-		assertThat(musicStoreRepository.findAllPlaylists())
+		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
 			.isEmpty();
 	}
 
