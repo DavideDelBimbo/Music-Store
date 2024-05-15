@@ -16,6 +16,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
 
     <!-- Dependencies versions -->
+    <log4j.version>2.23.1</log4j.version>
     <junit.version>4.13.2</junit.version>
     <assertj.swing.version>3.17.1</assertj.swing.version>
     <mockito.version>4.4.0</mockito.version>
@@ -70,7 +71,32 @@
     </sonar.issue.ignore.multicriteria.e2.resourceKey>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <!-- Importing log4j BOM -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <!-- Logging dependencies -->
+    <dependency>
+      <!-- Version taken from the log4j imported BOM -->
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <!-- Version taken from the log4j imported BOM -->
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
+
     <!-- Testing dependencies -->
     <dependency>
       <groupId>junit</groupId>

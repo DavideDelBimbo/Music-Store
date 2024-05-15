@@ -4,6 +4,10 @@ import java.awt.EventQueue;
 
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -12,13 +16,15 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
-import io.github.davidedelbimbo.music_store.model.Song;
 import io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository;
 import io.github.davidedelbimbo.music_store.view.swing.MusicStoreSwingView;
 import io.github.davidedelbimbo.music_store.view.swing.CreatePlaylistDialog;
+import io.github.davidedelbimbo.music_store.model.Song;
 
 @Command(mixinStandardHelpOptions = true)
 public class MusicStoreSwingApp implements Callable<Void> {
+	private static final Logger LOGGER = LogManager.getLogger(MusicStoreSwingApp.class);
+
 	@Option(names = { "--mongo-host" }, description = "MongoDB host address")
 	private String mongoHost = "localhost";
 
@@ -56,7 +62,7 @@ public class MusicStoreSwingApp implements Callable<Void> {
 				musicStoreController.allSongs();
 				musicStoreController.allPlaylists();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.log(Level.ERROR, "Exception", e);
 			}
 		});
 		return null;
