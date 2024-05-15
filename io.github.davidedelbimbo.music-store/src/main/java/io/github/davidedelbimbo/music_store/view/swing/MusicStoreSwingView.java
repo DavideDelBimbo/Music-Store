@@ -122,13 +122,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			toggleAddToPlaylistButton();
 			toggleRemoveFromPlaylistButton();
 
-			if (comboBoxPlaylists.getSelectedIndex() != -1) {
-				// Display all songs in selected playlist.
-				Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+			listSongsInPlaylistModel.clear();
+			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
+			if (playlist != null) {
+				// Display songs in selected playlist.
 				musicStoreController.allSongsInPlaylist(playlist);
-			} else {
-				// Clear the list of songs in playlist.
-				listSongsInPlaylistModel.clear();
 			}
 		});
 
