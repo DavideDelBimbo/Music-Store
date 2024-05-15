@@ -43,9 +43,12 @@ public class MusicStoreSwingApp implements Callable<Void> {
 		EventQueue.invokeLater(() -> {
 			try {
 				MongoClient client = new MongoClient(new ServerAddress(mongoHost, mongoPort));
-				MusicStoreMongoRepository musicStoreMongoRepository = new MusicStoreMongoRepository(client, databaseName, songCollectionName, playlistCollectionName);
+				client.getDatabase(databaseName).drop();
+				MusicStoreMongoRepository musicStoreMongoRepository = new MusicStoreMongoRepository(client,
+						databaseName, songCollectionName, playlistCollectionName);
 				MusicStoreSwingView musicStoreSwingView = new MusicStoreSwingView(new CreatePlaylistDialog());
-				MusicStoreController musicStoreController = new MusicStoreController(musicStoreSwingView, musicStoreMongoRepository);
+				MusicStoreController musicStoreController = new MusicStoreController(musicStoreSwingView,
+						musicStoreMongoRepository);
 				musicStoreSwingView.setMusicStoreController(musicStoreController);
 				musicStoreSwingView.setVisible(true);
 
