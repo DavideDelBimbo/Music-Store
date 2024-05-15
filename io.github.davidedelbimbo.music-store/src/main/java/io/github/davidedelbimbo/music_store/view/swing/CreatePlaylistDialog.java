@@ -34,7 +34,7 @@ public class CreatePlaylistDialog extends JDialog {
 	private JButton btnCancel;
 	private JLabel lblErrorMessage;
 
-	private MusicStoreController musicStoreController;
+	private transient MusicStoreController musicStoreController;
 
 	JButton getBtnCreatePlaylist() {
 		return btnCreatePlaylist;
