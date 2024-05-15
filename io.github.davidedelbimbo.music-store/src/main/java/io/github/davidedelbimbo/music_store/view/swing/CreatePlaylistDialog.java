@@ -3,6 +3,10 @@ package io.github.davidedelbimbo.music_store.view.swing;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
+import io.github.davidedelbimbo.music_store.model.Playlist;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -13,9 +17,6 @@ import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Color;
-
-import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
-import io.github.davidedelbimbo.music_store.model.Playlist;
 
 public class CreatePlaylistDialog extends JDialog {
 	public static final String LBL_PLAYLIST_NAME = "lblPlaylistName";
@@ -35,11 +36,15 @@ public class CreatePlaylistDialog extends JDialog {
 
 	private transient MusicStoreController musicStoreController;
 
-	public JLabel getLblErrorMessage() {
-		return lblErrorMessage;
+	JButton getBtnCreatePlaylist() {
+		return btnCreatePlaylist;
 	}
 
-	public void setMusicStoreController(MusicStoreController musicStoreController) {
+	void setErrorMessage(String errorMessage) {
+		lblErrorMessage.setText(errorMessage);
+	}
+
+	void setMusicStoreController(MusicStoreController musicStoreController) {
 		this.musicStoreController = musicStoreController;
 	}
 
@@ -126,10 +131,6 @@ public class CreatePlaylistDialog extends JDialog {
 		gbc_lblErrorMessage.gridx = 0;
 		gbc_lblErrorMessage.gridy = 2;
 		contentPane.add(lblErrorMessage, gbc_lblErrorMessage);
-	}
-
-	public void displayErrorMessage(String errorMessage) {
-		lblErrorMessage.setText(errorMessage);
 	}
 
 	@Override

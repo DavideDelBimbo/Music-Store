@@ -57,7 +57,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	private transient MusicStoreController musicStoreController;
 	private CreatePlaylistDialog createPlaylistDialog;
 
-	public DefaultComboBoxModel<Playlist> getComboBoxPlaylistsModel() {
+	DefaultComboBoxModel<Playlist> getComboBoxPlaylistsModel() {
 		return comboBoxPlaylistsModel;
 	}
 
@@ -69,21 +69,23 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		return listSongsInPlaylistModel;
 	}
 
-	public void setMusicStoreController(MusicStoreController musicStoreController) {
+	void setMusicStoreController(MusicStoreController musicStoreController) {
 		this.musicStoreController = musicStoreController;
+		this.createPlaylistDialog.setMusicStoreController(musicStoreController);
 	}
 
 	/**
 	 * Create the frame.
 	 */
 	public MusicStoreSwingView(CreatePlaylistDialog createPlaylistDialog) {
-		this.createPlaylistDialog = createPlaylistDialog;
-
 		setTitle("Music Store View");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		// Create playlist dialog.
+		this.createPlaylistDialog = createPlaylistDialog;
 
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
@@ -206,7 +208,6 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			// Selecting a song in playlist list should clear the selection in store list.
 			listSongsInStore.clearSelection();
 		});
-		
 
 		btnAddToPlaylist = new JButton("Add to playlist");
 		btnAddToPlaylist.setEnabled(false);
@@ -262,11 +263,6 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
-	public void displayAllSongsInPlaylist(List<Song> songs) {
-		songs.stream().forEach(listSongsInPlaylistModel::addElement);
-	}
-
-	@Override
 	public void displayAllPlaylists(List<Playlist> playlists) {
 		playlists.stream().forEach(comboBoxPlaylistsModel::addElement);
 	}
@@ -290,6 +286,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
+	public void displayAllSongsInPlaylist(List<Song> songs) {
+		songs.stream().forEach(listSongsInPlaylistModel::addElement);
+	}
+
+	@Override
 	public void displaySongInPlaylist(Song song) {
 		listSongsInPlaylistModel.addElement(song);
 		resetErrorLabel();
@@ -301,11 +302,10 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		resetErrorLabel();
 	}
 
-	@Override
 	public void displayError(String message) {
 		if (createPlaylistDialog.isVisible()) {
 			// Display error in dialog.
-			createPlaylistDialog.displayErrorMessage(message);
+			createPlaylistDialog.setErrorMessage(message);
 		} else {
 			// Display error in main view.
 			lblErrorMessage.setText(message);

@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static io.github.davidedelbimbo.music_store.view.swing.CreatePlaylistDialog.*;
+
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 
@@ -61,11 +62,12 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testResetControlsOnDialogOpen() {
 		dialog.textBox(TXT_PLAYLIST_NAME).enterText(PLAYLIST_NAME);
-		GuiActionRunner.execute(() ->
-			createPlaylistDialog.getLblErrorMessage().setText("Error message"));
-		dialog.button(BTN_CREATE_PLAYLIST_DIALOG).requireEnabled();
+		GuiActionRunner.execute(() -> {
+			createPlaylistDialog.getBtnCreatePlaylist().setEnabled(true);
+			createPlaylistDialog.setErrorMessage("Error message");
+		});
 
-		// Close and reopen the dialog.
+		// Close and re-open dialog.
 		dialog.close();
 		dialog.show();
 
@@ -92,7 +94,7 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testDisplayErrorMessageShouldShowErrorMessage() {
 		GuiActionRunner.execute(() ->
-			createPlaylistDialog.displayErrorMessage("Error message"));
+			createPlaylistDialog.setErrorMessage("Error message"));
 
 		// Verify that error message is displayed.
 		dialog.label(LBL_ERROR_MESSAGE_DIALOG).requireText("Error message");
@@ -101,10 +103,11 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 
 	// Tests to verify GUI events.
 	@Test @GUITest
-	public void testCreatePlaylistButtonShouldDelegateToMusicStoreControllerCreatePlaylist() {
+	public void testCreatPlaylistButtonShouldDelegateToMusicStoreControllerCreatePlaylist() {
 		dialog.textBox(TXT_PLAYLIST_NAME).enterText(PLAYLIST_NAME);
 		dialog.button(BTN_CREATE_PLAYLIST_DIALOG).click();
 
+		// Verify that createPlaylist method is called with the playlist name.
 		verify(musicStoreController).createPlaylist(new Playlist(PLAYLIST_NAME));
 	}
 

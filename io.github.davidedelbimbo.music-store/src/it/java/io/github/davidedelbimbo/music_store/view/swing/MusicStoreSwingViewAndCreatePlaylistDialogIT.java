@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import static io.github.davidedelbimbo.music_store.view.swing.MusicStoreSwingView.*;
 import static io.github.davidedelbimbo.music_store.view.swing.CreatePlaylistDialog.*;
+
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 
@@ -38,7 +39,6 @@ public class MusicStoreSwingViewAndCreatePlaylistDialogIT extends AssertJSwingJU
 			createPlaylistDialog = new CreatePlaylistDialog();
 			musicStoreSwingView = new MusicStoreSwingView(createPlaylistDialog);
 			musicStoreSwingView.setMusicStoreController(musicStoreController);
-			createPlaylistDialog.setMusicStoreController(musicStoreController);
 			return musicStoreSwingView;
 		});
 

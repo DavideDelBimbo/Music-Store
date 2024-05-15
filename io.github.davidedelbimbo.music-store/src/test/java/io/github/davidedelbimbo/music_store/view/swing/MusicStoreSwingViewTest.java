@@ -17,16 +17,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static io.github.davidedelbimbo.music_store.view.swing.MusicStoreSwingView.*;
+
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
 
 @RunWith(GUITestRunner.class)
 public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
-	private static final int SONG_1_ID = 1;
+	private static final Integer SONG_1_ID = 1;
 	private static final String SONG_1_TITLE = "Song1";
 	private static final String SONG_1_ARTIST = "Artist1";
-	private static final int SONG_2_ID = 2;
+	private static final Integer SONG_2_ID = 2;
 	private static final String SONG_2_NAME = "Song2";
 	private static final String SONG_2_ARTIST = "Artist2";
 	private static final String PLAYLIST_1_NAME = "Playlist1";
@@ -40,8 +41,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Override
 	protected void onSetUp() {
-		createPlaylistDialog = mock(CreatePlaylistDialog.class);
 		musicStoreController = mock(MusicStoreController.class);
+		createPlaylistDialog = mock(CreatePlaylistDialog.class);
 
 		GuiActionRunner.execute(() -> {
 			// Create the MusicStoreSwingView frame.
@@ -197,19 +198,6 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testDisplayAllSongsInPlaylistShouldAddAllSongsToPlaylistList() {
-		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
-
-		GuiActionRunner.execute(() ->
-			musicStoreSwingView.displayAllSongsInPlaylist(Arrays.asList(song1, song2)));
-
-		// Verify that songs are added to the playlist list.
-		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
-		assertThat(listContents).containsExactly(song1.toString(), song2.toString());
-	}
-
-	@Test @GUITest
 	public void testDisplayAllPlaylistsShouldAddAllPlaylistsToComboBoxPlaylists() {
 		Playlist playlist1 = new Playlist(PLAYLIST_1_NAME);
 		Playlist playlist2 = new Playlist(PLAYLIST_2_NAME);
@@ -270,9 +258,22 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
+	public void testDisplayAllSongsInPlaylistShouldAddAllSongsToPlaylistList() {
+		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Song song2 = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
+
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayAllSongsInPlaylist(Arrays.asList(song1, song2)));
+
+		// Verify that songs are added to the playlist list.
+		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
+		assertThat(listContents).containsExactly(song1.toString(), song2.toString());
+	}
+
+	@Test @GUITest
 	public void testDisplaySongInPlaylistShouldAddTheSongToPlaylistListAndResetTheErrorLabel() {
-		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		Song songToAdd = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
+		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(existingSong));
 
@@ -326,7 +327,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.displayError("Error message"));
 
 		// Verify that the error message is displayed in the dialog.
-		verify(createPlaylistDialog).displayErrorMessage("Error message");
+		verify(createPlaylistDialog).setErrorMessage("Error message");
 	}
 
 
@@ -341,12 +342,15 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testSelectPlaylistFromComboBoxShouldDelegateToMusicStoreControllerAllSongsInPlaylist() {
 		List<Song> songs = Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
-		GuiActionRunner.execute(() ->
-			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME, songs)));
+		GuiActionRunner.execute(() -> {
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_2_NAME, songs));
+		});
+			
 
-		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_2_NAME);
 
-		verify(musicStoreController).allSongsInPlaylist(new Playlist(PLAYLIST_1_NAME, songs));
+		verify(musicStoreController).allSongsInPlaylist(new Playlist(PLAYLIST_2_NAME, songs));
 	}
 
 	@Test @GUITest

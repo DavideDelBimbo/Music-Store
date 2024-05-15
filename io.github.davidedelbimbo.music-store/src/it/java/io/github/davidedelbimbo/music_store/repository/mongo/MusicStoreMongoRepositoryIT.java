@@ -19,6 +19,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import static io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository.*;
+
 import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
 

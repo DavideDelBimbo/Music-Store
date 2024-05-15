@@ -2,9 +2,7 @@ package io.github.davidedelbimbo.music_store.controller;
 
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.After;
@@ -14,6 +12,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
 import static io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository.*;
+
 import io.github.davidedelbimbo.music_store.repository.MusicStoreRepository;
 import io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
@@ -106,13 +105,12 @@ public class MusicStoreControllerIT {
 	public void testAllSongsInPlaylist() {
 		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-		List<Song> songs = new ArrayList<>(Arrays.asList(song1, song2));
-		Playlist playlist = new Playlist(PLAYLIST_NAME, songs);
+		Playlist playlist = new Playlist(PLAYLIST_NAME, Arrays.asList(song1, song2));
 		musicStoreRepository.createPlaylist(playlist);
 
 		musicStoreController.allSongsInPlaylist(playlist);
 
-		verify(musicStoreView).displayAllSongsInPlaylist(songs);
+		verify(musicStoreView).displayAllSongsInPlaylist(Arrays.asList(song1, song2));
 	}
 
 	@Test
@@ -133,8 +131,7 @@ public class MusicStoreControllerIT {
 		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreRepository.addSong(songToRemove);
 
-		List<Song> songs = new ArrayList<>(Arrays.asList(songToRemove));
-		Playlist playlist = new Playlist(PLAYLIST_NAME, songs);
+		Playlist playlist = new Playlist(PLAYLIST_NAME, Arrays.asList(songToRemove));
 		musicStoreRepository.createPlaylist(playlist);
 
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
