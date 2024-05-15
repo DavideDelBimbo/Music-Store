@@ -28,9 +28,9 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 	private MongoCollection<Document> songCollection;
 	private MongoCollection<Document> playlistCollection;
 
-	public MusicStoreMongoRepository(MongoClient client, String database, String songCollection, String playlistCollection) {
-		this.songCollection = client.getDatabase(database).getCollection(songCollection);
-		this.playlistCollection = client.getDatabase(database).getCollection(playlistCollection);
+	public MusicStoreMongoRepository(MongoClient client, String databaseName, String songCollectionName, String playlistCollectionName) {
+		this.songCollection = client.getDatabase(databaseName).getCollection(songCollectionName);
+		this.playlistCollection = client.getDatabase(databaseName).getCollection(playlistCollectionName);
 	}
 
 	@Override
