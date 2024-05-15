@@ -12,6 +12,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
+import io.github.davidedelbimbo.music_store.model.Song;
 import io.github.davidedelbimbo.music_store.repository.mongo.MusicStoreMongoRepository;
 import io.github.davidedelbimbo.music_store.view.swing.MusicStoreSwingView;
 import io.github.davidedelbimbo.music_store.view.swing.CreatePlaylistDialog;
@@ -47,6 +48,8 @@ public class MusicStoreSwingApp implements Callable<Void> {
 				MusicStoreController musicStoreController = new MusicStoreController(musicStoreSwingView, musicStoreMongoRepository);
 				musicStoreSwingView.setMusicStoreController(musicStoreController);
 				musicStoreSwingView.setVisible(true);
+
+				initializeDatabase(musicStoreMongoRepository);
 				musicStoreController.allSongs();
 				musicStoreController.allPlaylists();
 			} catch (Exception e) {
@@ -54,5 +57,12 @@ public class MusicStoreSwingApp implements Callable<Void> {
 			}
 		});
 		return null;
+	}
+
+	private void initializeDatabase(MusicStoreMongoRepository musicStoreMongoRepository) {
+		musicStoreMongoRepository.addSong(new Song(1, "Song1", "Artist1"));
+		musicStoreMongoRepository.addSong(new Song(2, "Song2", "Artist2"));
+		musicStoreMongoRepository.addSong(new Song(3, "Song3", "Artist3"));
+		
 	}
 }
