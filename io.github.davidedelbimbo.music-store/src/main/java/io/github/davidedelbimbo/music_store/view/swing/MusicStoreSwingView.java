@@ -69,7 +69,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		return listSongsInPlaylistModel;
 	}
 
-	void setMusicStoreController(MusicStoreController musicStoreController) {
+	public void setMusicStoreController(MusicStoreController musicStoreController) {
 		this.musicStoreController = musicStoreController;
 		this.createPlaylistDialog.setMusicStoreController(musicStoreController);
 	}
