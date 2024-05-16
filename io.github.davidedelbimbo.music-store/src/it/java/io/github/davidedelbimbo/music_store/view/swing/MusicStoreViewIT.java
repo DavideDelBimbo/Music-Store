@@ -211,6 +211,7 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToUpdate));
 
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.button(BTN_ADD_TO_PLAYLIST).click();
 
@@ -230,9 +231,10 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		// Add a playlist to the repository and show it in the view.
 		Playlist playlistToUpdate = new Playlist(PLAYLIST_1_NAME, Arrays.asList(songToAdd));
 		musicStoreRepository.createPlaylist(playlistToUpdate);
-		GuiActionRunner.execute(() -> 
+		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToUpdate));
 
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.button(BTN_ADD_TO_PLAYLIST).click();
 
@@ -249,13 +251,14 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		musicStoreRepository.addSong(songToRemove);
 		GuiActionRunner.execute(() -> 
 			musicStoreSwingView.getListSongsInStoreModel().addElement(songToRemove));
-				
+
 		// Create a playlist and show it in the view.
 		Playlist playlistToUpdate = new Playlist(PLAYLIST_1_NAME, Arrays.asList(songToRemove));
 		musicStoreRepository.createPlaylist(playlistToUpdate);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToUpdate));
 
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.button(BTN_REMOVE_FROM_PLAYLIST).click();
 
@@ -271,12 +274,13 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> 
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToUpdate));
 
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
+
 		// Add a song to the repository and show it in the view.
 		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreRepository.addSong(songToRemove);
-		GuiActionRunner.execute(() -> {
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(songToRemove);
-		});
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(songToRemove));
 
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.button(BTN_REMOVE_FROM_PLAYLIST).click();

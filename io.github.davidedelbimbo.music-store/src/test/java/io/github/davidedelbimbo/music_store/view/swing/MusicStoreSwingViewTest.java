@@ -121,13 +121,15 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testRemoveFromPlaylistButtonShouldBeEnableOnlyWhenAPlaylistAndASongInPlaylistAreSelected() {
-		GuiActionRunner.execute(() -> {
-			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
-		});
+		GuiActionRunner.execute(() -> 
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME)));
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
+
+		GuiActionRunner.execute(() -> musicStoreSwingView.getListSongsInPlaylistModel()
+				.addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
+
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireEnabled();
 	}
 
@@ -388,13 +390,15 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testRemoveSongFromPlaylistButtonShouldDelegateToMusicStoreControllerRemoveSongFromPlaylist() {
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		GuiActionRunner.execute(() -> {
-			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlist);
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(songToRemove);
-		});
+		GuiActionRunner.execute(() -> 
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlist));
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
+
+		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(songToRemove));
+
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.button(BTN_REMOVE_FROM_PLAYLIST).click();
 
