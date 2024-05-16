@@ -1,6 +1,7 @@
 package io.github.davidedelbimbo.music_store.repository.mongo;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -70,7 +71,8 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 
 	@Override
 	public Playlist findPlaylistByName(String playlistName) {
-		Document playlistDocument = this.playlistCollection.find(Filters.eq(TITLE_FIELD, playlistName)).first();
+		Pattern pattern = Pattern.compile("^" + playlistName + "$", Pattern.CASE_INSENSITIVE);
+		Document playlistDocument = this.playlistCollection.find(Filters.eq(TITLE_FIELD, pattern)).first();
 		if (playlistDocument != null) {
 			return fromDocumentToPlaylist(playlistDocument);
 		}

@@ -164,6 +164,19 @@ public class MusicStoreMongoRepositoryIT {
 	}
 
 	@Test
+	public void testFindPlaylistByNameWhenPlaylistExistsWithNoSensitiveCase() {
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		addTestPlaylistToDatabase(playlist);
+
+		Playlist playlistToFind = new Playlist(PLAYLIST_2_NAME, Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
+		addTestPlaylistToDatabase(playlistToFind);
+
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toLowerCase())).isEqualTo(playlistToFind);
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toUpperCase()).getSongs())
+			.containsExactly(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+	}
+
+	@Test
 	public void testCreatePlaylist() {
 		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME, Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
 
