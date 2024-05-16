@@ -19,8 +19,6 @@ import io.github.davidedelbimbo.music_store.model.Playlist;
 
 @RunWith(GUITestRunner.class)
 public class MusicStoreSwingViewAndCreatePlaylistDialogIT extends AssertJSwingJUnitTestCase {
-	private static final String COMBO_BOX_PLAYLISTS = "comboBoxPlaylists";
-
 	private static final String PLAYLIST_NAME = "New Playlist";
 
 	private FrameFixture window;

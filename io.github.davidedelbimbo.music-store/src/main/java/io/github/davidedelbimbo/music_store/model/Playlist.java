@@ -44,7 +44,7 @@ public class Playlist {
 		if (obj instanceof Playlist) {
 			final Playlist other = (Playlist) obj;
 			return Objects.equals(this.name, other.name)
-					&& Objects.equals(this.songs, other.songs);
+				&& Objects.equals(this.songs, other.songs);
 		} else {
 			return false;
 		}

@@ -20,7 +20,6 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 	public static final String SONG_COLLECTION_NAME = "song";
 	public static final String PLAYLIST_COLLECTION_NAME = "playlist";
 
-	public static final String ID_FIELD = "id";
 	public static final String TITLE_FIELD = "title";
 	public static final String ARTIST_FIELD = "artist";
 	public static final String PLAYLIST_FIELD = "playlist";
@@ -43,22 +42,14 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 	}
 
 	@Override
-	public Song findSongById(Integer songId) {
-		Document songDocument = this.songCollection.find(Filters.eq(ID_FIELD, songId)).first();
-		if (songDocument != null) {
-			return fromDocumentToSong(songDocument);
-		}
-		return null;
-	}
+	public void initializeSongs(List<Song> songs) {
+		// Clear the existing songs.
+		this.songCollection.deleteMany(new Document());
 
-	@Override
-	public void addSong(Song song) {
-		this.songCollection.insertOne(fromSongToDocument(song));
-	}
-
-	@Override
-	public void removeSong(Song song) {
-		this.songCollection.deleteOne(Filters.eq(ID_FIELD, song.getId()));
+		// Insert the new songs.
+		this.songCollection.insertMany(songs.stream()
+			.map(this::fromSongToDocument)
+			.collect(Collectors.toList()));
 	}
 
 	@Override
@@ -97,7 +88,7 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 
 	// Helper methods.
 	private Song fromDocumentToSong(Document document) {
-		return new Song(document.getInteger(ID_FIELD), document.getString(TITLE_FIELD), document.getString(ARTIST_FIELD));
+		return new Song(document.getString(TITLE_FIELD), document.getString(ARTIST_FIELD));
 	}
 
 	private Playlist fromDocumentToPlaylist(Document document) {
@@ -110,7 +101,6 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 
 	private Document fromSongToDocument(Song song) {
 		return new Document()
-			.append(ID_FIELD, song.getId())
 			.append(TITLE_FIELD, song.getTitle())
 			.append(ARTIST_FIELD, song.getArtist());
 	}

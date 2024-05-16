@@ -1,7 +1,7 @@
 package io.github.davidedelbimbo.music_store.app.swing;
 
 import java.awt.EventQueue;
-
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.Logger;
@@ -49,7 +49,6 @@ public class MusicStoreSwingApp implements Callable<Void> {
 		EventQueue.invokeLater(() -> {
 			try {
 				MongoClient client = new MongoClient(new ServerAddress(mongoHost, mongoPort));
-				client.getDatabase(databaseName).getCollection(songCollectionName).drop();
 				MusicStoreMongoRepository musicStoreMongoRepository = new MusicStoreMongoRepository(client,
 						databaseName, songCollectionName, playlistCollectionName);
 				MusicStoreSwingView musicStoreSwingView = new MusicStoreSwingView(new CreatePlaylistDialog());
@@ -58,7 +57,10 @@ public class MusicStoreSwingApp implements Callable<Void> {
 				musicStoreSwingView.setMusicStoreController(musicStoreController);
 				musicStoreSwingView.setVisible(true);
 
-				initializeDatabase(musicStoreMongoRepository);
+				musicStoreMongoRepository.initializeSongs(Arrays.asList(
+						new Song("Song1", "Artist1"),
+						new Song("Song2", "Artist2"),
+						new Song("Song3", "Artist3")));
 				musicStoreController.allSongs();
 				musicStoreController.allPlaylists();
 			} catch (Exception e) {
@@ -66,12 +68,5 @@ public class MusicStoreSwingApp implements Callable<Void> {
 			}
 		});
 		return null;
-	}
-
-	private void initializeDatabase(MusicStoreMongoRepository musicStoreMongoRepository) {
-		musicStoreMongoRepository.addSong(new Song(1, "Song1", "Artist1"));
-		musicStoreMongoRepository.addSong(new Song(2, "Song2", "Artist2"));
-		musicStoreMongoRepository.addSong(new Song(3, "Song3", "Artist3"));
-		
 	}
 }

@@ -24,10 +24,8 @@ import io.github.davidedelbimbo.music_store.model.Song;
 
 @RunWith(GUITestRunner.class)
 public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
-	private static final Integer SONG_1_ID = 1;
 	private static final String SONG_1_TITLE = "Song1";
 	private static final String SONG_1_ARTIST = "Artist1";
-	private static final Integer SONG_2_ID = 2;
 	private static final String SONG_2_NAME = "Song2";
 	private static final String SONG_2_ARTIST = "Artist2";
 	private static final String PLAYLIST_1_NAME = "Playlist1";
@@ -93,7 +91,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void testAddToPlaylistButtonShouldBeEnabledOnlyWhenAPlaylistAndASongInStoreAreSelected() {
 		GuiActionRunner.execute(() -> {
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
-			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
@@ -113,7 +111,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testAddToPlaylistButtonShouldBeDisabledWhenNoSongIsSelected() {
 		GuiActionRunner.execute(() ->
-			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
+			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
 
 		window.list(LIST_SONGS_IN_STORE).clearSelection();
 		window.button(BTN_ADD_TO_PLAYLIST).requireDisabled();
@@ -127,7 +125,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 
 		GuiActionRunner.execute(() -> musicStoreSwingView.getListSongsInPlaylistModel()
-				.addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
+				.addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireEnabled();
@@ -145,7 +143,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testRemoveFromPlaylistButtonShouldBeDisabledWhenNoSongIsSelected() {
 		GuiActionRunner.execute(() ->
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST)));
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
 
 		window.list(LIST_SONGS_IN_PLAYLIST).clearSelection();
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireDisabled();
@@ -156,7 +154,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> {
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_2_NAME));
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_2_NAME);
@@ -166,8 +164,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testSelectingASongInStoreShouldUnselectTheSongInPlaylist() {
 		GuiActionRunner.execute(() -> {
-			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST));
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
@@ -179,8 +177,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testSelectingASongInPlaylistShouldUnselectTheSongInStore() {
 		GuiActionRunner.execute(() -> {
-			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+			musicStoreSwingView.getListSongsInStoreModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST));
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST));
 		});
 
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
@@ -193,8 +191,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	// Tests to verify GUI actions.
 	@Test @GUITest
 	public void testDisplayAllSongsInStoreShouldAddAllSongsToSongStoreList() {
-		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
+		Song song1 = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Song song2 = new Song(SONG_2_NAME, SONG_2_ARTIST);
 
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.displayAllSongsInStore(Arrays.asList(song1, song2)));
@@ -266,8 +264,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testDisplayAllSongsInPlaylistShouldAddAllSongsToPlaylistList() {
-		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
+		Song song1 = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Song song2 = new Song(SONG_2_NAME, SONG_2_ARTIST);
 
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.displayAllSongsInPlaylist(Arrays.asList(song1, song2)));
@@ -279,8 +277,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testDisplaySongInPlaylistShouldAddTheSongToPlaylistListAndResetTheErrorLabel() {
-		Song songToAdd = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
-		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Song songToAdd = new Song(SONG_2_NAME, SONG_2_ARTIST);
+		Song existingSong = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(existingSong));
 
@@ -297,8 +295,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testHideSongFromPlaylistShouldRemoveTheSongFromPlaylistListAndResetTheErrorLabel() {
-		Song songToHide = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song existingSong = new Song(SONG_2_ID, SONG_2_NAME, SONG_2_ARTIST);
+		Song songToHide = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Song existingSong = new Song(SONG_2_NAME, SONG_2_ARTIST);
 		GuiActionRunner.execute(() -> {
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(songToHide);
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(existingSong);
@@ -348,7 +346,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testSelectPlaylistFromComboBoxShouldDelegateToMusicStoreControllerAllSongsInPlaylist() {
-		List<Song> songs = Arrays.asList(new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST));
+		List<Song> songs = Arrays.asList(new Song(SONG_1_TITLE, SONG_1_ARTIST));
 		GuiActionRunner.execute(() -> {
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_2_NAME, songs));
@@ -374,7 +372,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testAddSongToPlaylistButtonShouldDelegateToMusicStoreControllerAddSongToPlaylist() {
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() -> {
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlist);
 			musicStoreSwingView.getListSongsInStoreModel().addElement(songToAdd);
@@ -395,7 +393,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(songToRemove));
 

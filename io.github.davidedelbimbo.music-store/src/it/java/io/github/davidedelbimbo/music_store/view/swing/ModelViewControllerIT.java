@@ -32,7 +32,6 @@ import io.github.davidedelbimbo.music_store.model.Song;
 public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 	private static final Integer mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 
-	private static final Integer SONG_ID = 1;
 	private static final String SONG_TITLE = "Song";
 	private static final String SONG_ARTIST = "Artist";
 	private static final String PLAYLIST_NAME = "My Playlist";
@@ -47,10 +46,8 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 		client = new MongoClient(new ServerAddress("localhost", mongoPort));
 		musicStoreRepository = new MusicStoreMongoRepository(client, STORE_DB_NAME, SONG_COLLECTION_NAME, PLAYLIST_COLLECTION_NAME);
 
-		// Explicit empty the database through the repository.
-		for (Song song : musicStoreRepository.findAllSongs()) {
-			musicStoreRepository.removeSong(song);
-		}
+		// Explicit initialization of database through the repository.
+		musicStoreRepository.initializeSongs(Arrays.asList(new Song(SONG_TITLE, SONG_ARTIST)));
 		for (Playlist playlist : musicStoreRepository.findAllPlaylists()) {
 			musicStoreRepository.deletePlaylist(playlist);
 		}
@@ -103,9 +100,6 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testAddSongToPlaylist() {
-		// Add a song to repository needed for the test.
-		musicStoreRepository.addSong(new Song(SONG_ID, SONG_TITLE, SONG_ARTIST));
-
 		// Create a playlist needed for the test.
 		musicStoreRepository.createPlaylist(new Playlist(PLAYLIST_NAME));
 
@@ -122,16 +116,13 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 
 		// Verify that song is added to the database.
 		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_NAME).getSongs())
-				.containsExactly(new Song(SONG_ID, SONG_TITLE, SONG_ARTIST));
+				.containsExactly(new Song(SONG_TITLE, SONG_ARTIST));
 	}
 
 	@Test @GUITest
 	public void testRemoveSongFromPlaylist() {
-		// Add a song to repository needed for the test.
-		musicStoreRepository.addSong(new Song(SONG_ID, SONG_TITLE, SONG_ARTIST));
-
 		// Create a playlist needed for the test.
-		musicStoreRepository.createPlaylist(new Playlist(PLAYLIST_NAME, Arrays.asList(new Song(SONG_ID, SONG_TITLE, SONG_ARTIST))));
+		musicStoreRepository.createPlaylist(new Playlist(PLAYLIST_NAME, Arrays.asList(new Song(SONG_TITLE, SONG_ARTIST))));
 
 		// Use the controller to make appear songs and playlists in the UI.
 		GuiActionRunner.execute(() -> {

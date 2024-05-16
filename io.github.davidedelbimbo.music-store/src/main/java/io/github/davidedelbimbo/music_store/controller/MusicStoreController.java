@@ -8,7 +8,6 @@ import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
 
 public class MusicStoreController {
-	public static final String SONG_NOT_FOUND_MSG = "Song not found: ";
 	public static final String PLAYLIST_NOT_FOUND_MSG = "Playlist not found: ";
 	public static final String PLAYLIST_ALREADY_EXISTS_MSG = "Playlist already exists: ";
 	public static final String SONG_NOT_FOUND_IN_PLAYLIST_MSG = "Song not found in playlist: ";
@@ -68,13 +67,6 @@ public class MusicStoreController {
 	}
 
 	public void addSongToPlaylist(Playlist playlist, Song song) {
-		// Check if song exists.
-		Song songToAdd = musicStoreRepository.findSongById(song.getId());
-		if (songToAdd == null) {
-			musicStoreView.displayError(SONG_NOT_FOUND_MSG + song);
-			return;
-		}
-
 		// Check if playlist exists.
 		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
 		if (playlistToUpdate == null) {
@@ -83,25 +75,18 @@ public class MusicStoreController {
 		}
 
 		// Check if song is already in playlist.
-		if (playlistToUpdate.getSongs().contains(songToAdd)) {
-			musicStoreView.displayError(SONG_ALREADY_IN_PLAYLIST_MSG + songToAdd);
+		if (playlistToUpdate.getSongs().contains(song)) {
+			musicStoreView.displayError(SONG_ALREADY_IN_PLAYLIST_MSG + song);
 			return;
 		}
 
 		// Add song to playlist.
-		playlistToUpdate.addSong(songToAdd);
+		playlistToUpdate.addSong(song);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
-		musicStoreView.displaySongInPlaylist(songToAdd);
+		musicStoreView.displaySongInPlaylist(song);
 	}
 
 	public void removeSongFromPlaylist(Playlist playlist, Song song) {
-		// Check if song exists.
-		Song songToRemove = musicStoreRepository.findSongById(song.getId());
-		if (songToRemove == null) {
-			musicStoreView.displayError(SONG_NOT_FOUND_MSG + song);
-			return;
-		}
-
 		// Check if playlist exists.
 		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
 		if (playlistToUpdate == null) {
@@ -110,15 +95,15 @@ public class MusicStoreController {
 		}
 
 		// Check if song is in playlist.
-		if (!playlistToUpdate.getSongs().contains(songToRemove)) {
-			musicStoreView.displayError(SONG_NOT_FOUND_IN_PLAYLIST_MSG + songToRemove);
+		if (!playlistToUpdate.getSongs().contains(song)) {
+			musicStoreView.displayError(SONG_NOT_FOUND_IN_PLAYLIST_MSG + song);
 			return;
 		}
 
 		// Remove song from playlist.
-		playlistToUpdate.removeSong(songToRemove);
+		playlistToUpdate.removeSong(song);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
-		musicStoreView.hideSongFromPlaylist(songToRemove);
+		musicStoreView.hideSongFromPlaylist(song);
 	}
 
 
