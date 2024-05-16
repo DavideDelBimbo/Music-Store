@@ -30,18 +30,6 @@ public class MusicStoreSwingViewSteps {
 			window.cleanUp();
 	}
 
-	/*
-	@When("The user clicks the {string} button of dialog")
-	public void the_user_clicks_the_button_of_dialog(String buttonName) {
-		
-	}
-
-
-	@Then("The drop-down list contains the new playlist")
-	public void the_drop_down_list_contains_the_new_playlist() {
-		
-	}*/
-
 	@Given("the Music Store view is shown")
 	public void the_music_store_view_is_shown() {
 		// Start the Swing application.
