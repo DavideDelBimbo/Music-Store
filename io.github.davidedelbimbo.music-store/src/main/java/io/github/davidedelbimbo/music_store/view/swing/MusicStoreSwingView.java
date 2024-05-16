@@ -18,11 +18,15 @@ import java.awt.Insets;
 import java.awt.Color;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
+import javax.swing.ScrollPaneConstants;
+import java.awt.Component;
+import java.awt.Dimension;
 
 public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	public static final String LBL_SELECT_PLAYLIST = "lblSelectPlaylist";
@@ -78,6 +82,8 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	 * Create the frame.
 	 */
 	public MusicStoreSwingView(CreatePlaylistDialog createPlaylistDialog) {
+		setMinimumSize(new Dimension(530, 0));
+		setResizable(false);
 		setTitle("Music Store View");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -89,7 +95,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{110, 150, 30, 30, 200, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -163,6 +169,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		});
 
 		scrollPaneSongsInStore = new JScrollPane();
+		scrollPaneSongsInStore.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
@@ -173,6 +180,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		listSongsInStoreModel = new DefaultListModel<>();
 		listSongsInStore = new JList<>(listSongsInStoreModel);
+		listSongsInStore.setAlignmentX(Component.LEFT_ALIGNMENT);
 		listSongsInStore.setName(LIST_SONGS_IN_STORE);
 		listSongsInStore.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneSongsInStore.setViewportView(listSongsInStore);
@@ -189,6 +197,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		});
 
 		scrollPaneSongsInPlaylist = new JScrollPane();
+		scrollPaneSongsInPlaylist.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
@@ -199,6 +208,8 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		listSongsInPlaylistModel = new DefaultListModel<>();
 		listSongsInPlaylist = new JList<>(listSongsInPlaylistModel);
+		listSongsInPlaylist.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		listSongsInPlaylist.setFixedCellWidth(250);
 		listSongsInPlaylist.setName(LIST_SONGS_IN_PLAYLIST);
 		listSongsInPlaylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneSongsInPlaylist.setViewportView(listSongsInPlaylist);
@@ -307,14 +318,42 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		resetErrorLabel();
 	}
 
-	public void displayError(String message) {
-		if (createPlaylistDialog.isVisible()) {
-			// Display error in dialog.
-			createPlaylistDialog.setErrorMessage(message);
-		} else {
-			// Display error in main view.
-			lblErrorMessage.setText(message);
-		}
+	@Override
+	public void displayErrorAndDisplayPlaylist(String message, Playlist playlist) {
+		// Display error in dialog.
+		createPlaylistDialog.setErrorMessage(message + playlist);
+
+		// Add the playlist to the combo box.
+		if (!containsIgnoreCase(playlist))
+			comboBoxPlaylistsModel.addElement(playlist);
+	}
+
+	@Override
+	public void displayErrorAndHidePlaylist(String message, Playlist playlist) {
+		// Display error in view.
+		lblErrorMessage.setText(message + playlist);
+
+		// Remove the playlist from the combo box.
+		comboBoxPlaylistsModel.removeElement(playlist);
+	}
+
+	@Override
+	public void displayErrorAndDisplaySongInPlaylist(String message, Song song, Playlist playlist) {
+		// Display error in view.
+		lblErrorMessage.setText(message + song);
+
+		// Add the song to the playlist list.
+		if(!listSongsInPlaylistModel.contains(song))
+			listSongsInPlaylistModel.addElement(song);
+	}
+
+	@Override
+	public void displayErrorAndHideSongFromPlaylist(String message, Song song, Playlist playlist) {
+		// Display error in view.
+		lblErrorMessage.setText(message + song);
+
+		// Remove the song from the playlist list.
+		listSongsInPlaylistModel.removeElement(song);
 	}
 
 
@@ -343,5 +382,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		btnDeletePlaylist.setEnabled(isPlaylistSelected);
 		btnRemoveFromPlaylist.setEnabled(isPlaylistSelected && isSongInPlaylistSelected);
+	}
+
+	private boolean containsIgnoreCase(Playlist playlist) {
+		return IntStream.range(0, comboBoxPlaylistsModel.getSize())
+			.mapToObj(comboBoxPlaylistsModel::getElementAt)
+			.anyMatch(existingPlaylist -> existingPlaylist.getName().equalsIgnoreCase(playlist.getName()));
 	}
 }

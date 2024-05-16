@@ -201,18 +201,18 @@ public class MusicStoreMongoRepositoryIT {
 	private void addTestSongToDatabase(Song song) {
 		songCollection.insertOne(
 			new Document()
-				.append(TITLE_FIELD, song.getTitle())
-				.append(ARTIST_FIELD, song.getArtist()));
+				.append(SONG_TITLE_FIELD, song.getTitle())
+				.append(SONG_ARTIST_FIELD, song.getArtist()));
 	}
 
 	private void addTestPlaylistToDatabase(Playlist playlist) {
 		playlistCollection.insertOne(
 				new Document()
-				.append(TITLE_FIELD, playlist.getName())
-				.append(SONGS_FIELD, playlist.getSongs().stream()
+				.append(PLAYLIST_NAME_FIELD, playlist.getName())
+				.append(PLAYLIST_SONGS_FIELD, playlist.getSongs().stream()
 					.map(song -> new Document()
-						.append(TITLE_FIELD, song.getTitle())
-						.append(ARTIST_FIELD, song.getArtist()))
+						.append(SONG_TITLE_FIELD, song.getTitle())
+						.append(SONG_ARTIST_FIELD, song.getArtist()))
 					.collect(Collectors.toList())));
 	}
 
@@ -220,8 +220,8 @@ public class MusicStoreMongoRepositoryIT {
 		return StreamSupport
 			.stream(songCollection.find().spliterator(), false)
 			.map(songDocument -> new Song(
-				songDocument.getString(TITLE_FIELD),
-				songDocument.getString(ARTIST_FIELD)))
+				songDocument.getString(SONG_TITLE_FIELD),
+				songDocument.getString(SONG_ARTIST_FIELD)))
 			.collect(Collectors.toList());
 	}
 
@@ -229,11 +229,11 @@ public class MusicStoreMongoRepositoryIT {
 		return StreamSupport
 			.stream(playlistCollection.find().spliterator(), false)
 			.map(playlistDocument -> new Playlist(
-				playlistDocument.getString(TITLE_FIELD),
-				playlistDocument.getList(SONGS_FIELD, Document.class).stream()
+				playlistDocument.getString(PLAYLIST_NAME_FIELD),
+				playlistDocument.getList(PLAYLIST_SONGS_FIELD, Document.class).stream()
 					.map(songDocument -> new Song(
-						songDocument.getString(TITLE_FIELD),
-						songDocument.getString(ARTIST_FIELD)))
+						songDocument.getString(SONG_TITLE_FIELD),
+						songDocument.getString(SONG_ARTIST_FIELD)))
 					.collect(Collectors.toList())))
 				.collect(Collectors.toList());
 	}

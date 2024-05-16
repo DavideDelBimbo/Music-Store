@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <stringAttribute key="bad_container_name" value="\io.github.davidedelbimbo.music-store\launches\"/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/io.github.davidedelbimbo.music-store/src/main/java/io/github/davidedelbimbo/music_store/app/swing/MusicStoreSwingApp.java"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="1"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+        <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+    </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_EXCLUDE_TEST_CODE" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="io.github.davidedelbimbo.music_store.app.swing.MusicStoreSwingApp"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="io.github.davidedelbimbo.music-store"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--mongo-host=localhost&#13;&#10;--mongo-port=27017&#13;&#10;--db-name=music_store&#13;&#10;--song-collection=song&#13;&#10;--playlist-collection=playlist"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="io.github.davidedelbimbo.music-store"/>
+    <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+</launchConfiguration>

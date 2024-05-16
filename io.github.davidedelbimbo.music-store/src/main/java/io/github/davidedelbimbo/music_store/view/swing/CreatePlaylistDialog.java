@@ -52,6 +52,7 @@ public class CreatePlaylistDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public CreatePlaylistDialog() {
+		setResizable(false);
 		setAlwaysOnTop(true);
 		setTitle("Create A Playlist");
 		setBounds(100, 100, 450, 150);
