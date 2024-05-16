@@ -80,7 +80,7 @@ public class MusicStoreSwingViewAndCreatePlaylistDialogIT extends AssertJSwingJU
 		dialog.button(BTN_CREATE_PLAYLIST_DIALOG).click();
 
 		// Verify that playlist is added to the playlists combo box in the view.
-		window.comboBox(COMBO_BOX_PLAYLISTS).requireSelection(PLAYLIST_NAME);
+		window.comboBox(COMBO_BOX_PLAYLISTS).requireItemCount(1);
 	}
 
 	@Test @GUITest

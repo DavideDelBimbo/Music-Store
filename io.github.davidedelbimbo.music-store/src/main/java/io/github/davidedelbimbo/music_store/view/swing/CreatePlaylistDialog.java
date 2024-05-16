@@ -94,7 +94,7 @@ public class CreatePlaylistDialog extends JDialog {
 			}
 		});
 
-		btnCreatePlaylist = new JButton("Create playlist");
+		btnCreatePlaylist = new JButton("Create Playlist");
 		btnCreatePlaylist.setEnabled(false);
 		btnCreatePlaylist.setName(BTN_CREATE_PLAYLIST_DIALOG);
 		GridBagConstraints gbc_btnCreatePlaylist = new GridBagConstraints();

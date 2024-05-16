@@ -115,6 +115,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		gbc_comboBoxPlaylists.gridy = 0;
 		contentPane.add(comboBoxPlaylists, gbc_comboBoxPlaylists);
 
+		// Start with no selection in combo box.
+		comboBoxPlaylistsModel.setSelectedItem("");
+
 		// Playlist combo box listener.
 		comboBoxPlaylists.addActionListener(e -> {
 			// Toggle buttons based on selection.
@@ -130,7 +133,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			}
 		});
 
-		btnCreatePlaylist = new JButton("Create new playlist");
+		btnCreatePlaylist = new JButton("Create Playlist");
 		btnCreatePlaylist.setName(BTN_CREATE_PLAYLIST_VIEW);
 		GridBagConstraints gbc_btnCreatePlaylist = new GridBagConstraints();
 		gbc_btnCreatePlaylist.anchor = GridBagConstraints.WEST;
@@ -142,7 +145,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// Create playlist button listener.
 		btnCreatePlaylist.addActionListener(e -> createPlaylistDialog.setVisible(true));
 
-		btnDeletePlaylist = new JButton("Delete selcted playlist");
+		btnDeletePlaylist = new JButton("Delete Playlist");
 		btnDeletePlaylist.setEnabled(false);
 		btnDeletePlaylist.setName(BTN_DELETE_PLAYLIST);
 		GridBagConstraints gbc_btnDeletePlaylist = new GridBagConstraints();
@@ -211,7 +214,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			}
 		});
 
-		btnAddToPlaylist = new JButton("Add to playlist");
+		btnAddToPlaylist = new JButton("Add To Playlist");
 		btnAddToPlaylist.setEnabled(false);
 		btnAddToPlaylist.setName(BTN_ADD_TO_PLAYLIST);
 		GridBagConstraints gbc_btnAddToPlaylist = new GridBagConstraints();
@@ -229,7 +232,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			musicStoreController.addSongToPlaylist(playlist, song);
 		});
 
-		btnRemoveFromPlaylist = new JButton("Remove from playlist");
+		btnRemoveFromPlaylist = new JButton("Remove From Playlist");
 		btnRemoveFromPlaylist.setEnabled(false);
 		btnRemoveFromPlaylist.setName(BTN_REMOVE_FROM_PLAYLIST);
 		GridBagConstraints gbc_btnRemoveFromPlaylist = new GridBagConstraints();
