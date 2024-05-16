@@ -18,10 +18,8 @@ import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
 
 public class MusicStoreControllerTest {
-	private static Integer SONG_1_ID = 1;
 	private static String SONG_1_TITLE = "Song1";
 	private static String SONG_1_ARTIST = "Artist1";
-	private static Integer SONG_2_ID = 2;
 	private static String SONG_2_TITLE = "Song2";
 	private static String SONG_2_ARTIST = "Artist2";
 	private static String PLAYLIST_1_NAME = "Playlist1";
@@ -41,8 +39,8 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testAllSongs() {
-		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
+		Song song1 = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Song song2 = new Song(SONG_2_TITLE, SONG_2_ARTIST);
 		when(musicStoreRepository.findAllSongs()).thenReturn(Arrays.asList(song1, song2));
 
 		musicStoreController.allSongs();
@@ -111,8 +109,8 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testAllSongsInPlaylistWhenPlaylistExists() {
-		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
+		Song song1 = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Song song2 = new Song(SONG_2_TITLE, SONG_2_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(song1, song2));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
@@ -134,10 +132,9 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testAddSongToPlaylistWhenSongDoesNotAlreadyInPlaylist() {
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 
-		Song existingSong = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
+		Song existingSong = new Song(SONG_2_TITLE, SONG_2_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
@@ -150,23 +147,8 @@ public class MusicStoreControllerTest {
 	}
 
 	@Test
-	public void testAddSongToPlaylistWhenSongDoesNotExist() {
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(null);
-
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
-
-		musicStoreController.addSongToPlaylist(playlist, songToAdd);
-
-		verify(musicStoreView).displayError(SONG_NOT_FOUND_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
-		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
-	}
-
-	@Test
 	public void testAddSongToPlaylistWhenPlaylistDoesNotExist() {
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
@@ -179,10 +161,9 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testAddSongToPlaylistWhenSongAlreadyInPlaylist() {
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToAdd);
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 
-		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Song existingSong = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
@@ -195,10 +176,9 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testRemoveSongFromPlaylistWhenSongExistsInPlaylist() {
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 
-		Song existingSong = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
+		Song existingSong = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
@@ -211,23 +191,8 @@ public class MusicStoreControllerTest {
 	}
 
 	@Test
-	public void testRemoveSongFromPlaylistWhenSongDoesNotExist() {
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(null);
-
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
-
-		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
-
-		verify(musicStoreView).displayError(SONG_NOT_FOUND_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
-		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
-	}
-
-	@Test
 	public void testRemoveSongFromPlaylistWhenPlaylistDoesNotExist() {
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
@@ -240,10 +205,9 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testRemoveSongFromPlaylistWhenSongDoesNotExistInPlaylist() {
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		when(musicStoreRepository.findSongById(SONG_1_ID)).thenReturn(songToRemove);
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 
-		Song existingSong = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
+		Song existingSong = new Song(SONG_2_TITLE, SONG_2_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 

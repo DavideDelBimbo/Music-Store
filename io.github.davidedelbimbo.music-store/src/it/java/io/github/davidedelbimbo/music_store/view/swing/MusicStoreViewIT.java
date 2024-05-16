@@ -36,10 +36,8 @@ import io.github.davidedelbimbo.music_store.model.Song;
 
 @RunWith(GUITestRunner.class)
 public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
-	private static final Integer SONG_1_ID = 1;
 	private static final String SONG_1_TITLE = "Song1";
 	private static final String SONG_1_ARTIST = "Artist1";
-	private static final Integer SONG_2_ID = 2;
 	private static final String SONG_2_TITLE = "Song2";
 	private static final String SONG_2_ARTIST = "Artist2";
 	private static final String PLAYLIST_1_NAME = "Playlist1";
@@ -76,10 +74,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		client = new MongoClient(new ServerAddress(serverAddress));
 		musicStoreRepository = new MusicStoreMongoRepository(client, STORE_DB_NAME, SONG_COLLECTION_NAME, PLAYLIST_COLLECTION_NAME);
 
-		// Explicit empty the database through the repository.
-		for (Song song : musicStoreRepository.findAllSongs()) {
-			musicStoreRepository.removeSong(song);
-		}
+		// Explicit initialization of database through the repository.
+		musicStoreRepository.initializeSongs(Arrays.asList(new Song(SONG_1_TITLE, SONG_1_ARTIST), new Song(SONG_2_TITLE, SONG_2_ARTIST)));
 		for (Playlist playlist : musicStoreRepository.findAllPlaylists()) {
 			musicStoreRepository.deletePlaylist(playlist);
 		}
@@ -106,10 +102,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testAllStudents() {
-		Song song1 = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		Song song2 = new Song(SONG_2_ID, SONG_2_TITLE, SONG_2_ARTIST);
-		musicStoreRepository.addSong(song1);
-		musicStoreRepository.addSong(song2);
+		Song song1 = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Song song2 = new Song(SONG_2_TITLE, SONG_2_ARTIST);
 
 		GuiActionRunner.execute(() ->
 			musicStoreController.allSongs());
@@ -199,9 +193,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testAddSongToPlaylistButtonSuccess() {
-		// Add a song to the repository and show it in the view.
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		musicStoreRepository.addSong(songToAdd);
+		// Show the song in the view.
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInStoreModel().addElement(songToAdd));
 
@@ -222,9 +215,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testAddSongToPlaylistButtonFails() {
-		// Add a song to the repository and show it in the view.
-		Song songToAdd = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		musicStoreRepository.addSong(songToAdd);
+		// Show the song in the view.
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInStoreModel().addElement(songToAdd));
 
@@ -246,9 +238,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testRemoveSongFromPlaylistButtonSuccess() {
-		// Add a song to the repository and show it in the view.
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		musicStoreRepository.addSong(songToRemove);
+		// Show the song in the view.
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() -> 
 			musicStoreSwingView.getListSongsInStoreModel().addElement(songToRemove));
 
@@ -276,9 +267,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 
-		// Add a song to the repository and show it in the view.
-		Song songToRemove = new Song(SONG_1_ID, SONG_1_TITLE, SONG_1_ARTIST);
-		musicStoreRepository.addSong(songToRemove);
+		// Show the song in the view.
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInPlaylistModel().addElement(songToRemove));
 
