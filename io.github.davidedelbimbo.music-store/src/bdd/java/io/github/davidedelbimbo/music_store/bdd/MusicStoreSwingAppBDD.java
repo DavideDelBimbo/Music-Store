@@ -1,5 +1,6 @@
 package io.github.davidedelbimbo.music_store.bdd;
 
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,6 @@ public class MusicStoreSwingAppBDD {
 
 	@BeforeClass
 	public static void setUpOnce() {
-
+		FailOnThreadViolationRepaintManager.install();
 	}
 }
