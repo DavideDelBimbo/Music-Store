@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.pitest.pitclipse.launch.mutationTest">
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/io.github.davidedelbimbo.music-store/src/test/java/io/github/davidedelbimbo/music_store/controller/MusicStoreControllerTest.java"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="1"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+        <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+    </listAttribute>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="io.github.davidedelbimbo.music_store.controller.MusicStoreControllerTest"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="io.github.davidedelbimbo.music-store"/>
+    <stringAttribute key="org.pitest.pitclipse.core.target.classes" value="io.github.davidedelbimbo.music_store.controller.MusicStoreController"/>
+    <stringAttribute key="org.pitest.pitclipse.core.test.avoidCallsTo" value="java.util.logging, org.apache.log4j, org.slf4j, org.apache.commons.logging, org.apache.logging.log4j"/>
+    <stringAttribute key="org.pitest.pitclipse.core.test.container" value=""/>
+    <stringAttribute key="org.pitest.pitclipse.core.test.excludeClasses" value="*Test"/>
+    <stringAttribute key="org.pitest.pitclipse.core.test.excludeMethods" value=""/>
+    <booleanAttribute key="org.pitest.pitclipse.core.test.incrementalAnalysis" value="false"/>
+    <booleanAttribute key="org.pitest.pitclipse.core.test.parallel" value="true"/>
+    <stringAttribute key="pitIndividualMutators" value="INVERT_NEGS,MATH,VOID_METHOD_CALLS,NEGATE_CONDITIONALS,CONDITIONALS_BOUNDARY,INCREMENTS,TRUE_RETURNS,FALSE_RETURNS,PRIMITIVE_RETURNS,EMPTY_RETURNS,NULL_RETURNS"/>
+    <stringAttribute key="pitMutators" value="STRONGER"/>
+</launchConfiguration>
