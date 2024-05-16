@@ -18,6 +18,7 @@ import java.awt.Insets;
 import java.awt.Color;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
@@ -308,17 +309,17 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
-	public void displayErrorPlaylistAlreadyExists(String message, Playlist playlist) {
+	public void displayErrorAndDisplayPlaylist(String message, Playlist playlist) {
 		// Display error in dialog.
 		createPlaylistDialog.setErrorMessage(message + playlist);
 
 		// Add the playlist to the combo box.
-		if(comboBoxPlaylistsModel.getIndexOf(playlist) == -1)
+		if (!containsIgnoreCase(playlist))
 			comboBoxPlaylistsModel.addElement(playlist);
 	}
 
 	@Override
-	public void displayErrorPlaylistNotFound(String message, Playlist playlist) {
+	public void displayErrorAndHidePlaylist(String message, Playlist playlist) {
 		// Display error in view.
 		lblErrorMessage.setText(message + playlist);
 
@@ -327,9 +328,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
-	public void displayErrorSongAlreadyInPlaylist(String message, Song song, Playlist playlist) {
+	public void displayErrorAndDisplaySongInPlaylist(String message, Song song, Playlist playlist) {
 		// Display error in view.
-		lblErrorMessage.setText(message + song + " in " + playlist);
+		lblErrorMessage.setText(message + song);
 
 		// Add the song to the playlist list.
 		if(!listSongsInPlaylistModel.contains(song))
@@ -337,9 +338,9 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
-	public void displayErrorSongNotFoundInPlaylist(String message, Song song, Playlist playlist) {
+	public void displayErrorAndHideSongFromPlaylist(String message, Song song, Playlist playlist) {
 		// Display error in view.
-		lblErrorMessage.setText(message + song + " in " + playlist);
+		lblErrorMessage.setText(message + song);
 
 		// Remove the song from the playlist list.
 		listSongsInPlaylistModel.removeElement(song);
@@ -371,5 +372,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		btnDeletePlaylist.setEnabled(isPlaylistSelected);
 		btnRemoveFromPlaylist.setEnabled(isPlaylistSelected && isSongInPlaylistSelected);
+	}
+
+	private boolean containsIgnoreCase(Playlist playlist) {
+		return IntStream.range(0, comboBoxPlaylistsModel.getSize())
+			.mapToObj(comboBoxPlaylistsModel::getElementAt)
+			.anyMatch(existingPlaylist -> existingPlaylist.getName().equalsIgnoreCase(playlist.getName()));
 	}
 }

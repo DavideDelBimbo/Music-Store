@@ -20,11 +20,11 @@ public interface MusicStoreView {
 
 	void hideSongFromPlaylist(Song song);
 
-	void displayErrorPlaylistAlreadyExists(String message, Playlist playlist);
+	void displayErrorAndDisplayPlaylist(String message, Playlist playlist);
 
-	void displayErrorPlaylistNotFound(String message, Playlist playlist);
+	void displayErrorAndHidePlaylist(String message, Playlist playlist);
 
-	void displayErrorSongAlreadyInPlaylist(String message, Song song, Playlist playlist);
+	void displayErrorAndDisplaySongInPlaylist(String message, Song song, Playlist playlist);
 
-	void displayErrorSongNotFoundInPlaylist(String message, Song song, Playlist playlist);
+	void displayErrorAndHideSongFromPlaylist(String message, Song song, Playlist playlist);
 }

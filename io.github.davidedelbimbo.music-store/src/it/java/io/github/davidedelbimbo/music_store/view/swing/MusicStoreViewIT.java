@@ -167,7 +167,7 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToDelete));
 
-		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(0);
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 		window.button(BTN_DELETE_PLAYLIST).click();
 
 		// Verify that playlist is deleted.
@@ -177,12 +177,11 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testDeleteButtonFails() {
-		// Add a playlist to the view but not to the repository.
+		// Show the playlist in the view already selected
 		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
 		GuiActionRunner.execute(() ->
-			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToDelete));
+			musicStoreSwingView.getComboBoxPlaylistsModel().setSelectedItem(playlistToDelete));
 
-		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(0);
 		window.button(BTN_DELETE_PLAYLIST).click();
 
 		// Verify that the combo box is correctly updated and error message is shown.
@@ -233,7 +232,7 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		// Verify that playlist list is correctly updated and error message is shown.
 		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
 			.containsExactly(songToAdd.toString());
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_ALREADY_IN_PLAYLIST_MSG + songToAdd + " in " + playlistToUpdate);
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_ALREADY_IN_PLAYLIST_MSG + songToAdd);
 	}
 
 	@Test @GUITest
@@ -278,6 +277,6 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		// Verify that playlist list is correctly updated and error message is shown.
 		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
 			.isEmpty();
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_NOT_FOUND_IN_PLAYLIST_MSG + songToRemove + " in " + playlistToUpdate);
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_NOT_FOUND_IN_PLAYLIST_MSG + songToRemove);
 	}
 }
