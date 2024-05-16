@@ -152,9 +152,9 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		dialog.textBox(TXT_PLAYLIST_NAME).enterText(PLAYLIST_1_NAME);
 		dialog.button(BTN_CREATE_PLAYLIST_DIALOG).click();
 
-		// Verify that playlist is not created.
+		// Verify that combo box is correctly updated and error message is shown.
 		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.isEmpty();
+			.containsExactly(existingPlaylist.toString());
 		dialog.label(LBL_ERROR_MESSAGE_DIALOG)
 			.requireText(PLAYLIST_ALREADY_EXISTS_MSG + existingPlaylist);
 	}
@@ -185,9 +185,9 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(0);
 		window.button(BTN_DELETE_PLAYLIST).click();
 
-		// Verify that playlist is not deleted.
+		// Verify that the combo box is correctly updated and error message is shown.
 		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.containsExactly(playlistToDelete.toString());
+			.isEmpty();
 		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(PLAYLIST_NOT_FOUND_MSG + playlistToDelete);
 	}
 
@@ -230,10 +230,10 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.list(LIST_SONGS_IN_STORE).selectItem(0);
 		window.button(BTN_ADD_TO_PLAYLIST).click();
 
-		// Verify that song is not added to playlist.
+		// Verify that playlist list is correctly updated and error message is shown.
 		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
 			.containsExactly(songToAdd.toString());
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_ALREADY_IN_PLAYLIST_MSG + songToAdd);
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_ALREADY_IN_PLAYLIST_MSG + songToAdd + " in " + playlistToUpdate);
 	}
 
 	@Test @GUITest
@@ -275,9 +275,9 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.button(BTN_REMOVE_FROM_PLAYLIST).click();
 
-		// Verify that song is not removed from playlist.
+		// Verify that playlist list is correctly updated and error message is shown.
 		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
-			.containsExactly(songToRemove.toString());
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_NOT_FOUND_IN_PLAYLIST_MSG + songToRemove);
+			.isEmpty();
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_NOT_FOUND_IN_PLAYLIST_MSG + songToRemove + " in " + playlistToUpdate);
 	}
 }

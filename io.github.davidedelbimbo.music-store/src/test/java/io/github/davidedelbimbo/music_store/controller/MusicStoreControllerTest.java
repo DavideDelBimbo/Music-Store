@@ -79,7 +79,7 @@ public class MusicStoreControllerTest {
 		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.createPlaylist(playlistToCreate);
 
-		verify(musicStoreView).displayError(PLAYLIST_ALREADY_EXISTS_MSG + PLAYLIST_1_NAME);
+		verify(musicStoreView).displayErrorPlaylistAlreadyExists(PLAYLIST_ALREADY_EXISTS_MSG, playlistToCreate);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
@@ -103,7 +103,7 @@ public class MusicStoreControllerTest {
 		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.deletePlaylist(playlistToDelete);
 
-		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verify(musicStoreView).displayErrorPlaylistNotFound(PLAYLIST_NOT_FOUND_MSG, playlistToDelete);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
@@ -126,7 +126,7 @@ public class MusicStoreControllerTest {
 
 		musicStoreController.allSongsInPlaylist(playlist);
 
-		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verify(musicStoreView).displayErrorPlaylistNotFound(PLAYLIST_NOT_FOUND_MSG, playlist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
@@ -155,7 +155,7 @@ public class MusicStoreControllerTest {
 
 		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
-		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verify(musicStoreView).displayErrorPlaylistNotFound(PLAYLIST_NOT_FOUND_MSG, playlist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
@@ -170,7 +170,7 @@ public class MusicStoreControllerTest {
 		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		assertThat(playlist.getSongs()).containsExactly(existingSong);
-		verify(musicStoreView).displayError(SONG_ALREADY_IN_PLAYLIST_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
+		verify(musicStoreView).displayErrorSongAlreadyInPlaylist(SONG_ALREADY_IN_PLAYLIST_MSG, songToAdd, playlist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
@@ -199,7 +199,7 @@ public class MusicStoreControllerTest {
 
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
 
-		verify(musicStoreView).displayError(PLAYLIST_NOT_FOUND_MSG + PLAYLIST_1_NAME);
+		verify(musicStoreView).displayErrorPlaylistNotFound(PLAYLIST_NOT_FOUND_MSG, playlist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
@@ -214,7 +214,7 @@ public class MusicStoreControllerTest {
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
 
 		assertThat(playlist.getSongs()).containsExactly(existingSong);
-		verify(musicStoreView).displayError(SONG_NOT_FOUND_IN_PLAYLIST_MSG + SONG_1_ARTIST + " - " + SONG_1_TITLE);
+		verify(musicStoreView).displayErrorSongNotFoundInPlaylist(SONG_NOT_FOUND_IN_PLAYLIST_MSG, songToRemove, playlist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 }

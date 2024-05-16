@@ -7,6 +7,7 @@ import org.bson.Document;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.After;
@@ -69,17 +70,23 @@ public class DatabaseSteps {
 
 	@Given("the song has meanwhile been added to the playlist database")
 	public void the_song_has_meanwhile_been_added_to_the_playlist_database() {
+		Document songDocument = new Document()
+				.append("title", SONG_1_TITLE)
+				.append("artist", SONG_1_ARTIST);
+
 		this.client.getDatabase(STORE_DB_NAME)
 			.getCollection(PLAYLIST_COLLECTION_NAME)
-			.updateOne(Filters.eq("name", EXISTING_PLAYLIST_NAME),
-				new Document("$push", new Document("songs", new Document().append("title", SONG_1_TITLE).append("artist", SONG_1_ARTIST))));
+			.updateOne(Filters.eq("name", EXISTING_PLAYLIST_NAME), Updates.addToSet("songs", songDocument));
 	}
 
 	@Given("the song has meanwhile been removed from the playlist database")
 	public void the_song_has_meanwhile_been_removed_from_the_playlist_database() {
+		Document songDocument = new Document()
+				.append("title", SONG_2_TITLE)
+				.append("artist", SONG_2_ARTIST);
+
 		this.client.getDatabase(STORE_DB_NAME)
 			.getCollection(PLAYLIST_COLLECTION_NAME)
-			.updateOne(Filters.eq("name", EXISTING_PLAYLIST_NAME),
-				new Document("$pull", new Document("songs", new Document().append("title", SONG_2_TITLE).append("artist", SONG_2_ARTIST))));
+			.updateOne(Filters.eq("name", EXISTING_PLAYLIST_NAME), Updates.pull("songs", songDocument));
 	}
 }

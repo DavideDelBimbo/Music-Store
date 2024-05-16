@@ -314,25 +314,98 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testDisplayErrorShouldShowTheMessageInTheErrorLabelIfDialogIsNotVisible() {
-		when(createPlaylistDialog.isVisible()).thenReturn(false);
-	
+	public void testDisplayErrorPlaylistAlreadyExistsWhenPlaylistsIsAlreadyInComboBoxShouldShowTheMessageInTheErrorLabel() {
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
 		GuiActionRunner.execute(() ->
-			musicStoreSwingView.displayError("Error message"));
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlist));
 
-		// Verify that the error message is displayed.
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText("Error message");
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayErrorPlaylistAlreadyExists("Error message: ", playlist));
+
+		// Verify that the error message is displayed in the dialog.
+		verify(createPlaylistDialog).setErrorMessage("Error message: " + playlist);
+
+		// Verify that the playlist is not added to the combo box.
+		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents()).containsExactly(playlist.toString());
 	}
 
 	@Test @GUITest
-	public void testDisplayErrorShouldShowTheMessageInTheErrorLabelIfDialogIsVisible() {
-		when(createPlaylistDialog.isVisible()).thenReturn(true);
+	public void testDisplayErrorPlaylistAlreadyExistsShouldWhenPlaylistsIsNotInComboBoxShouldShowTheMessageInTheDialogAndAddThePlaylistToComboBox() {
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
 
-		GuiActionRunner.execute(() -> 
-			musicStoreSwingView.displayError("Error message"));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayErrorPlaylistAlreadyExists("Error message: ", playlist));
 
 		// Verify that the error message is displayed in the dialog.
-		verify(createPlaylistDialog).setErrorMessage("Error message");
+		verify(createPlaylistDialog).setErrorMessage("Error message: " + playlist);
+
+		// Verify that the playlist is added to the combo box.
+		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents()).containsExactly(playlist.toString());
+	}
+
+	@Test @GUITest
+	public void testDisplayErrorPlaylistNotFoundShouldShowTheMessageInTheErrorLabelAndRemoveThePlaylistFromComboBox() {
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlist));
+
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayErrorPlaylistNotFound("Error message: ", playlist));
+
+		// Verify that the error message is displayed.
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText("Error message: " + playlist);
+
+		// Verify that the playlist is removed from the combo box.
+		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents()).isEmpty();
+	}
+
+	@Test @GUITest
+	public void testDisplayErrorSongAlreadyInPlaylistWhenSongIsAlreadyInPlaylistShouldShowTheMessageInTheErrorLabel() {
+		Song song = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(song));
+
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayErrorSongAlreadyInPlaylist("Error message: ", song, playlist));
+
+		// Verify that the error message is displayed.
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText("Error message: " + song + " in " + playlist);
+
+		// Verify that the song is not added to the playlist list.
+		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents()).containsExactly(song.toString());
+	}
+
+	@Test @GUITest
+	public void testDisplayErrorSongAlreadyInPlaylistWhenSongIsNotInPlaylistShouldShowTheMessageInTheErrorLabelAndAddTheSongToPlaylist() {
+		Song song = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayErrorSongAlreadyInPlaylist("Error message: ", song, playlist));
+
+		// Verify that the error message is displayed.
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText("Error message: " + song + " in " + playlist);
+
+		// Verify that the song is added to the playlist list.
+		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents()).containsExactly(song.toString());
+	}
+
+	@Test @GUITest
+	public void testDisplayErrorSongNotFoundInPlaylistShouldShowTheMessageInTheErrorLabelAndRemoveTheSongFromPlaylist() {
+		Song song = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
+		GuiActionRunner.execute(() -> 
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(song));
+
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayErrorSongNotFoundInPlaylist("Error message: ", song, playlist));
+
+		// Verify that the error message is displayed.
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText("Error message: " + song + " in " + playlist);
+
+		// Verify that the song is removed from the playlist list.
+		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents()).isEmpty();
 	}
 
 
