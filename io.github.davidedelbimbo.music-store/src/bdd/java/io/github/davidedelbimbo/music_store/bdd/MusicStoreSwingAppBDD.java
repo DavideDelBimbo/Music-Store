@@ -16,9 +16,9 @@ import io.cucumber.junit.CucumberOptions;
 public class MusicStoreSwingAppBDD {
 	public static final Integer MONGO_PORT = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 
-	public static final String DB_NAME = "test-db";
-	public static final String SONG_COLLECTION_NAME = "test-songs-collection";
-	public  static final String PLAYLIST_COLLECTION_NAME = "test.playlists-collection";
+	public static final String STORE_DB_NAME = "test-music-store";
+	public static final String SONG_COLLECTION_NAME = "test-song-collection";
+	public  static final String PLAYLIST_COLLECTION_NAME = "test-playlist-collection";
 
 	public static Integer SONG_1_ID = 1;
 	public static String SONG_1_TITLE = "Song1";
