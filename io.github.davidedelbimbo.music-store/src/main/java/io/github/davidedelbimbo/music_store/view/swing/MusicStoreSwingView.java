@@ -24,6 +24,9 @@ import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
+import javax.swing.ScrollPaneConstants;
+import java.awt.Component;
+import java.awt.Dimension;
 
 public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	public static final String LBL_SELECT_PLAYLIST = "lblSelectPlaylist";
@@ -79,6 +82,8 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	 * Create the frame.
 	 */
 	public MusicStoreSwingView(CreatePlaylistDialog createPlaylistDialog) {
+		setMinimumSize(new Dimension(530, 0));
+		setResizable(false);
 		setTitle("Music Store View");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -90,7 +95,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{110, 150, 30, 30, 200, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -164,6 +169,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		});
 
 		scrollPaneSongsInStore = new JScrollPane();
+		scrollPaneSongsInStore.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
@@ -174,6 +180,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		listSongsInStoreModel = new DefaultListModel<>();
 		listSongsInStore = new JList<>(listSongsInStoreModel);
+		listSongsInStore.setAlignmentX(Component.LEFT_ALIGNMENT);
 		listSongsInStore.setName(LIST_SONGS_IN_STORE);
 		listSongsInStore.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneSongsInStore.setViewportView(listSongsInStore);
@@ -190,6 +197,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		});
 
 		scrollPaneSongsInPlaylist = new JScrollPane();
+		scrollPaneSongsInPlaylist.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
@@ -200,6 +208,8 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		listSongsInPlaylistModel = new DefaultListModel<>();
 		listSongsInPlaylist = new JList<>(listSongsInPlaylistModel);
+		listSongsInPlaylist.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		listSongsInPlaylist.setFixedCellWidth(250);
 		listSongsInPlaylist.setName(LIST_SONGS_IN_PLAYLIST);
 		listSongsInPlaylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneSongsInPlaylist.setViewportView(listSongsInPlaylist);
