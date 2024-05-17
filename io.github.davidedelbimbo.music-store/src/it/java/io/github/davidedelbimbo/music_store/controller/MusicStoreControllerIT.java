@@ -115,7 +115,7 @@ public class MusicStoreControllerIT {
 
 		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
-		verify(musicStoreView).displaySongInPlaylist(songToAdd);
+		verify(musicStoreView).displayAllSongsInPlaylist(Arrays.asList(songToAdd));
 	}
 
 	@Test
@@ -126,6 +126,6 @@ public class MusicStoreControllerIT {
 
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
 
-		verify(musicStoreView).hideSongFromPlaylist(songToRemove);
+		verify(musicStoreView).displayAllSongsInPlaylist(Arrays.asList());
 	}
 }

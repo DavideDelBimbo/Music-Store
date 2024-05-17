@@ -101,7 +101,7 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testAddSongToPlaylist() {
 		// Create a playlist needed for the test.
-		musicStoreRepository.createPlaylist(new Playlist(PLAYLIST_NAME));
+		musicStoreRepository.createPlaylist(new Playlist(PLAYLIST_NAME, Arrays.asList()));
 
 		// Use the controller to make appear songs and playlists in the UI.
 		GuiActionRunner.execute(() -> {

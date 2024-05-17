@@ -84,7 +84,7 @@ public class MusicStoreController {
 		// Add song to playlist.
 		playlistToUpdate.addSong(song);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
-		musicStoreView.displaySongInPlaylist(song);
+		musicStoreView.displayAllSongsInPlaylist(playlistToUpdate.getSongs());
 	}
 
 	public void removeSongFromPlaylist(Playlist playlist, Song song) {
@@ -104,7 +104,7 @@ public class MusicStoreController {
 		// Remove song from playlist.
 		playlistToUpdate.removeSong(song);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
-		musicStoreView.hideSongFromPlaylist(song);
+		musicStoreView.displayAllSongsInPlaylist(playlistToUpdate.getSongs());
 	}
 
 

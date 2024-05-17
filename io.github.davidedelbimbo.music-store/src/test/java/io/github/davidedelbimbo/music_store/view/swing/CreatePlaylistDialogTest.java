@@ -64,7 +64,7 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 		dialog.textBox(TXT_PLAYLIST_NAME).enterText(PLAYLIST_NAME);
 		GuiActionRunner.execute(() -> {
 			createPlaylistDialog.getBtnCreatePlaylist().setEnabled(true);
-			createPlaylistDialog.setErrorMessage("Error message");
+			createPlaylistDialog.setErrorMessage("Error message: ", new Playlist(PLAYLIST_NAME));
 		});
 
 		// Close and re-open dialog.
@@ -94,10 +94,10 @@ public class CreatePlaylistDialogTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testDisplayErrorMessageShouldShowErrorMessage() {
 		GuiActionRunner.execute(() ->
-			createPlaylistDialog.setErrorMessage("Error message"));
+			createPlaylistDialog.setErrorMessage("Error message: ", new Playlist(PLAYLIST_NAME)));
 
 		// Verify that error message is displayed.
-		dialog.label(LBL_ERROR_MESSAGE_DIALOG).requireText("Error message");
+		dialog.label(LBL_ERROR_MESSAGE_DIALOG).requireText("Error message: " + PLAYLIST_NAME);
 	}
 
 

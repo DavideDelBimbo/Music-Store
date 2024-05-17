@@ -16,10 +16,6 @@ public interface MusicStoreView {
 
 	void displayAllSongsInPlaylist(List<Song> songs);
 
-	void displaySongInPlaylist(Song song);
-
-	void hideSongFromPlaylist(Song song);
-
 	void displayErrorAndDisplayPlaylist(String message, Playlist playlist);
 
 	void displayErrorAndHidePlaylist(String message, Playlist playlist);
