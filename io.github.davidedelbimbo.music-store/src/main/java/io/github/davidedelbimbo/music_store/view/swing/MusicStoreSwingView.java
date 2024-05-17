@@ -302,9 +302,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// Remove the playlist from the combo box.
 		comboBoxPlaylistsModel.removeElement(playlist);
 		comboBoxPlaylists.setSelectedIndex(-1);
-		toggleButtons();
 		resetErrorLabel();
-		
 	}
 
 	@Override
