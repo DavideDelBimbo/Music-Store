@@ -11,11 +11,14 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ScrollPaneConstants;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -24,9 +27,6 @@ import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
 import io.github.davidedelbimbo.music_store.view.MusicStoreView;
 import io.github.davidedelbimbo.music_store.model.Playlist;
 import io.github.davidedelbimbo.music_store.model.Song;
-import javax.swing.ScrollPaneConstants;
-import java.awt.Component;
-import java.awt.Dimension;
 
 public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	public static final String LBL_SELECT_PLAYLIST = "lblSelectPlaylist";
@@ -131,12 +131,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 			toggleAddToPlaylistButton();
 			toggleRemoveFromPlaylistButton();
 
+			// Display songs in selected playlist.
 			listSongsInPlaylistModel.clear();
 			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
-			if (playlist != null) {
-				// Display songs in selected playlist.
+			if (playlist != null)
 				musicStoreController.allSongsInPlaylist(playlist);
-			}
 		});
 
 		btnCreatePlaylist = new JButton("Create Playlist");

@@ -129,6 +129,39 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
+	public void testSelectPlaylistSuccess() {
+		Song songToShow = new Song(SONG_1_TITLE, SONG_1_ARTIST);
+		Playlist playlistToShow = new Playlist(PLAYLIST_1_NAME, Arrays.asList(songToShow));
+		musicStoreRepository.createPlaylist(playlistToShow);
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToShow));
+
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
+
+		// Verify that the list of songs in the playlist is populated.
+		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
+			.containsExactly(playlistToShow.toString());
+		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
+			.containsExactly(songToShow.toString());
+	}
+
+	@Test @GUITest
+	public void testSelectPlaylistFails() {
+		Playlist playlistToHide = new Playlist(PLAYLIST_1_NAME, Arrays.asList(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToHide));
+
+		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
+
+		// Verify that the combo box is correctly updated and error message is shown.
+		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
+			.isEmpty();
+		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
+			.isEmpty();
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(PLAYLIST_NOT_FOUND_MSG + playlistToHide);
+	}
+
+	@Test @GUITest
 	public void testCreateButtonSuccess() {
 		// Simulate opening the Create Playlist dialog.
 		dialog.show();
@@ -173,21 +206,6 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		// Verify that playlist is deleted.
 		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
 			.isEmpty();
-	}
-
-	@Test @GUITest
-	public void testDeleteButtonFails() {
-		// Show the playlist in the view already selected
-		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
-		GuiActionRunner.execute(() ->
-			musicStoreSwingView.getComboBoxPlaylistsModel().setSelectedItem(playlistToDelete));
-
-		window.button(BTN_DELETE_PLAYLIST).click();
-
-		// Verify that the combo box is correctly updated and error message is shown.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.isEmpty();
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(PLAYLIST_NOT_FOUND_MSG + playlistToDelete);
 	}
 
 	@Test @GUITest
@@ -239,7 +257,7 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 	public void testRemoveSongFromPlaylistButtonSuccess() {
 		// Show the song in the view.
 		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-		GuiActionRunner.execute(() -> 
+		GuiActionRunner.execute(() ->
 			musicStoreSwingView.getListSongsInStoreModel().addElement(songToRemove));
 
 		// Create a playlist and show it in the view.
