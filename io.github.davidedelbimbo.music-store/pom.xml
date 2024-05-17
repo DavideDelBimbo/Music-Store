@@ -6,7 +6,7 @@
 
   <groupId>io.github.davidedelbimbo</groupId>
   <artifactId>music-store</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>jar</packaging>
 
   <properties>
@@ -292,6 +292,30 @@
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-app</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.artifactId}-${project.version}</finalName>
+              <archive>
+                <manifest>
+                  <mainClass>io.github.davidedelbimbo.music_store.app.swing.MusicStoreSwingApp</mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Build Helper plugin to add test sources and resources -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
