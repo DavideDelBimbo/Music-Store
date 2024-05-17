@@ -50,6 +50,11 @@ public class MusicStoreSwingViewSteps {
 		}).using(BasicRobot.robotWithCurrentAwtHierarchy());
 	}
 
+	@Given("the user wants to select a playlist from the drop-down list")
+	public void the_user_wants_to_select_a_playlist_from_the_drop_down_list() {
+		assertThat(window.comboBox().contents()).anySatisfy(e -> assertThat(e).contains(EXISTING_PLAYLIST_NAME));
+	}
+
 	@Given("the user clicks the {string} button")
 	public void the_user_clicks_the_button(String buttonName) {
 		window.button(JButtonMatcher.withText(buttonName)).click();
@@ -80,12 +85,21 @@ public class MusicStoreSwingViewSteps {
 		window.list("listSongsInPlaylist").selectItem(Pattern.compile(".*" + SONG_2_TITLE + ".*"));
 	}
 
-
+	@When("the playlist is selected")
+	public void the_playlist_is_selected() {
+		window.comboBox().selectItem(Pattern.compile(".*" + EXISTING_PLAYLIST_NAME + ".*"));
+	}
+	
 	@When("the user clicks the {string} button of the dialog")
 	public void the_user_clicks_the_button_of_the_dialog(String buttonName) {
 		window.dialog().button(JButtonMatcher.withText(buttonName)).click();
 	}
 
+
+	@Then("all songs in the playlist are shown")
+	public void all_songs_in_the_playlist_are_shown() {
+		assertThat(window.list("listSongsInPlaylist").contents()).anySatisfy(e -> assertThat(e).contains(SONG_2_TITLE));
+	}
 
 	@Then("the playlist is added to the drop-down list")
 	public void the_playlist_is_added_to_the_drop_down_list() {
