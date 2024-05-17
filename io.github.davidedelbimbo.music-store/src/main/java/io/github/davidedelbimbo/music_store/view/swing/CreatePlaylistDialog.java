@@ -40,8 +40,8 @@ public class CreatePlaylistDialog extends JDialog {
 		return btnCreatePlaylist;
 	}
 
-	void setErrorMessage(String errorMessage) {
-		lblErrorMessage.setText(errorMessage);
+	void setErrorMessage(String errorMessage ,Playlist playlist) {
+		lblErrorMessage.setText(errorMessage + playlist);
 	}
 
 	void setMusicStoreController(MusicStoreController musicStoreController) {

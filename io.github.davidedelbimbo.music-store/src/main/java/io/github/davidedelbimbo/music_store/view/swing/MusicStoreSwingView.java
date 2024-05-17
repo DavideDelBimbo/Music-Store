@@ -127,15 +127,17 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// Playlist combo box listener.
 		comboBoxPlaylists.addActionListener(e -> {
 			// Toggle buttons based on selection.
-			toggleDeletePlaylistButton();
-			toggleAddToPlaylistButton();
-			toggleRemoveFromPlaylistButton();
+			toggleButtons();
+
+			// Reset error label.
+			resetErrorLabel();
 
 			// Display songs in selected playlist.
 			listSongsInPlaylistModel.clear();
 			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
-			if (playlist != null)
+			if (playlist != null) {
 				musicStoreController.allSongsInPlaylist(playlist);
+			}
 		});
 
 		btnCreatePlaylist = new JButton("Create Playlist");
@@ -164,8 +166,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		btnDeletePlaylist.addActionListener(e -> {
 			// Delete selected playlist.
 			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
-			if (playlist != null)
-				musicStoreController.deletePlaylist(playlist);
+			musicStoreController.deletePlaylist(playlist);
 		});
 
 		scrollPaneSongsInStore = new JScrollPane();
@@ -188,7 +189,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// List of songs in store listener.
 		listSongsInStore.addListSelectionListener(e -> {
 			// Toggle buttons based on selection.
-			toggleAddToPlaylistButton();
+			toggleButtons();
 
 			// Selecting a song in store list should clear the selection in playlist list.
 			if (listSongsInStore.getSelectedIndex() != -1) {
@@ -217,7 +218,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// List of songs in store listener.
 		listSongsInPlaylist.addListSelectionListener(e -> {
 			// Toggle buttons based on selection.
-			toggleRemoveFromPlaylistButton();
+			toggleButtons();
 
 			// Selecting a song in playlist list should clear the selection in store list.
 			if (listSongsInPlaylist.getSelectedIndex() != -1) {
@@ -237,9 +238,10 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		// Add song to playlist button listener.
 		btnAddToPlaylist.addActionListener(e -> {
-			// Add selected song to selected playlist.
 			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
 			Song song = listSongsInStore.getSelectedValue();
+
+			// Add selected song to selected playlist.
 			musicStoreController.addSongToPlaylist(playlist, song);
 		});
 
@@ -255,9 +257,10 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		// Remove song from playlist button listener.
 		btnRemoveFromPlaylist.addActionListener(e -> {
-			// Remove selected song from selected playlist.
 			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
 			Song song = listSongsInPlaylist.getSelectedValue();
+
+			// Remove selected song from selected playlist.
 			musicStoreController.removeSongFromPlaylist(playlist, song);
 		});
 
@@ -288,7 +291,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// Close dialog.
 		createPlaylistDialog.setVisible(false);
 
-		// Add playlist to combo box, select it and reset error label.
+		// Add the playlist to the combo box.
 		comboBoxPlaylistsModel.addElement(playlist);
 		comboBoxPlaylists.setSelectedItem(playlist);
 		resetErrorLabel();
@@ -296,6 +299,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void hidePlaylist(Playlist playlist) {
+		// Remove the playlist from the combo box.
 		comboBoxPlaylistsModel.removeElement(playlist);
 		comboBoxPlaylists.setSelectedIndex(-1);
 		resetErrorLabel();
@@ -303,62 +307,46 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void displayAllSongsInPlaylist(List<Song> songs) {
+		// Add songs to playlist list.
+		listSongsInPlaylistModel.clear();
 		songs.stream().forEach(listSongsInPlaylistModel::addElement);
-	}
-
-	@Override
-	public void displaySongInPlaylist(Song song) {
-		listSongsInPlaylistModel.addElement(song);
 		resetErrorLabel();
 	}
 
 	@Override
-	public void hideSongFromPlaylist(Song song) {
-		listSongsInPlaylistModel.removeElement(song);
-		resetErrorLabel();
-	}
-
-	@Override
-	public void displayErrorAndDisplayPlaylist(String message, Playlist playlist) {
+	public void displayErrorAndAddPlaylist(String message, Playlist playlist) {
 		if (containsIgnoreCase(playlist)) {
 			// Display error in dialog.
-			createPlaylistDialog.setErrorMessage(message + playlist);
+			createPlaylistDialog.setErrorMessage(message, playlist);
 		} else {
 			// Add the playlist to the combo box.
 			comboBoxPlaylistsModel.addElement(playlist);
 			comboBoxPlaylists.setSelectedItem(playlist);
 			createPlaylistDialog.setVisible(false);
+
+			// Display error in view.
+			lblErrorMessage.setText(message + playlist);
 		}
-		resetErrorLabel();
 	}
 
 	@Override
-	public void displayErrorAndHidePlaylist(String message, Playlist playlist) {
-		// Display error in view.
-		lblErrorMessage.setText(message + playlist);
-
+	public void displayErrorAndRemovePlaylist(String message, Playlist playlist) {
 		// Remove the playlist from the combo box.
 		comboBoxPlaylistsModel.removeElement(playlist);
 		comboBoxPlaylists.setSelectedIndex(-1);
+		toggleButtons();
+
+		// Display error in view.
+		lblErrorMessage.setText(message + playlist);
 	}
 
 	@Override
-	public void displayErrorAndDisplaySongInPlaylist(String message, Song song, Playlist playlist) {
+	public void displayErrorAndUpdatePlaylist(String message, Song song, Playlist playlist) {
+		// Update the playlist list.
+		musicStoreController.allSongsInPlaylist(playlist);
+
 		// Display error in view.
 		lblErrorMessage.setText(message + song);
-
-		// Add the song to the playlist list.
-		if(!listSongsInPlaylistModel.contains(song))
-			listSongsInPlaylistModel.addElement(song);
-	}
-
-	@Override
-	public void displayErrorAndHideSongFromPlaylist(String message, Song song, Playlist playlist) {
-		// Display error in view.
-		lblErrorMessage.setText(message + song);
-
-		// Remove the song from the playlist list.
-		listSongsInPlaylistModel.removeElement(song);
 	}
 
 
@@ -367,25 +355,13 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		lblErrorMessage.setText(" ");
 	}
 
-	private void toggleDeletePlaylistButton() {
-		boolean isPlaylistSelected = comboBoxPlaylists.getSelectedIndex() != -1;
-
-		btnDeletePlaylist.setEnabled(isPlaylistSelected);
-	}
-
-	private void toggleAddToPlaylistButton() {
+	private void toggleButtons() {
 		boolean isPlaylistSelected = comboBoxPlaylists.getSelectedIndex() != -1;
 		boolean isSongInStoreSelected = listSongsInStore.getSelectedIndex() != -1;
-
-		btnDeletePlaylist.setEnabled(isPlaylistSelected);
-		btnAddToPlaylist.setEnabled(isPlaylistSelected && isSongInStoreSelected);
-	}
-
-	private void toggleRemoveFromPlaylistButton() {
-		boolean isPlaylistSelected = comboBoxPlaylists.getSelectedIndex() != -1;
 		boolean isSongInPlaylistSelected = listSongsInPlaylist.getSelectedIndex() != -1;
 
 		btnDeletePlaylist.setEnabled(isPlaylistSelected);
+		btnAddToPlaylist.setEnabled(isPlaylistSelected && isSongInStoreSelected);
 		btnRemoveFromPlaylist.setEnabled(isPlaylistSelected && isSongInPlaylistSelected);
 	}
 
