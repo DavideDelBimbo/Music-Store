@@ -56,14 +56,14 @@ public class MusicStoreController {
 	}
 
 	public void allSongsInPlaylist(Playlist playlist) {
-		// Check if playlist exists.
-		if (Boolean.FALSE.equals(isPlaylistExists(playlist))) {
+		Playlist playlistToUpdate = musicStoreRepository.findPlaylistByName(playlist.getName());
+		if (playlistToUpdate == null) {
 			musicStoreView.displayErrorAndHidePlaylist(PLAYLIST_NOT_FOUND_MSG, playlist);
 			return;
 		}
 
 		// Get all songs in playlist.
-		List<Song> songs = playlist.getSongs();
+		List<Song> songs = playlistToUpdate.getSongs();
 		musicStoreView.displayAllSongsInPlaylist(songs);
 	}
 

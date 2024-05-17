@@ -164,7 +164,8 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		btnDeletePlaylist.addActionListener(e -> {
 			// Delete selected playlist.
 			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
-			musicStoreController.deletePlaylist(playlist);
+			if (playlist != null)
+				musicStoreController.deletePlaylist(playlist);
 		});
 
 		scrollPaneSongsInStore = new JScrollPane();
