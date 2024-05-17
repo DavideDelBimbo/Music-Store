@@ -3,10 +3,6 @@ package io.github.davidedelbimbo.music_store.view.swing;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
-import io.github.davidedelbimbo.music_store.model.Playlist;
-
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -17,6 +13,10 @@ import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Color;
+import java.awt.Dimension;
+
+import io.github.davidedelbimbo.music_store.controller.MusicStoreController;
+import io.github.davidedelbimbo.music_store.model.Playlist;
 
 public class CreatePlaylistDialog extends JDialog {
 	public static final String LBL_PLAYLIST_NAME = "lblPlaylistName";
@@ -52,10 +52,11 @@ public class CreatePlaylistDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public CreatePlaylistDialog() {
+		setMinimumSize(new Dimension(450, 120));
 		setResizable(false);
 		setAlwaysOnTop(true);
 		setTitle("Create A Playlist");
-		setBounds(100, 100, 450, 150);
+		setBounds(100, 100, 450, 120);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
