@@ -32,8 +32,7 @@ Feature: Music Store View
     And the user provides a name in the text field of the dialog
     But the playlist has meanwhile been added to the database
     When the user clicks the "Create Playlist" button of the dialog
-    Then an error is shown in dialog containing the name of the playlist
-    And the playlist is added to the drop-down list
+    Then the playlist is added to the drop-down list
 
   Scenario: Delete an existing playlist
     Given the user selects a playlist from the drop-down list

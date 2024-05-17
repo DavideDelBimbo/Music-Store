@@ -320,12 +320,16 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void displayErrorAndDisplayPlaylist(String message, Playlist playlist) {
-		// Display error in dialog.
-		createPlaylistDialog.setErrorMessage(message + playlist);
-
-		// Add the playlist to the combo box.
-		if (!containsIgnoreCase(playlist))
+		if (containsIgnoreCase(playlist)) {
+			// Display error in dialog.
+			createPlaylistDialog.setErrorMessage(message + playlist);
+		} else {
+			// Add the playlist to the combo box.
 			comboBoxPlaylistsModel.addElement(playlist);
+			comboBoxPlaylists.setSelectedItem(playlist);
+			createPlaylistDialog.setVisible(false);
+		}
+		resetErrorLabel();
 	}
 
 	@Override
@@ -335,6 +339,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 		// Remove the playlist from the combo box.
 		comboBoxPlaylistsModel.removeElement(playlist);
+		comboBoxPlaylists.setSelectedIndex(-1);
 	}
 
 	@Override
