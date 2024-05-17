@@ -57,10 +57,12 @@ Configure the MongoDB connection with the following parameters:
     <img src="https://github.com/DavideDelBimbo/Music-Store/actions/workflows/maven.yml/badge.svg" alt="Build">&nbsp;&nbsp;
     <img src="https://github.com/DavideDelBimbo/Music-Store/actions/workflows/pitest.yml/badge.svg" alt="Mutation Testing">
 </div>
+
 - **Coveralls**:
 <div style="display: flex; flex-direction: row; gap: 10px;">
     <img src="https://coveralls.io/repos/github/DavideDelBimbo/Music-Store/badge.svg" alt="Coverage Status">
 </div>
+
 - **SonarCloud**:
 <div style="display: flex; flex-direction: row; gap: 10px;">
     <img src="https://sonarcloud.io/api/project_badges/measure?project=DavideDelBimbo_Music-Store&metric=alert_status" alt="Quality Gate Status">&nbsp;&nbsp;
