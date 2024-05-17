@@ -6,6 +6,19 @@ Feature: Music Store View
     And the database contains a playlist with a few songs in it
     And the Music Store view is shown
 
+  Scenario: Select an existing playlist
+    Given the user wants to select a playlist from the drop-down list
+    When the playlist is selected
+    Then all songs in the playlist are shown
+
+  Scenario: Select a non-existing playlist
+    Given the user wants to select a playlist from the drop-down list
+    But the playlist has meanwhile been removed from the database
+    When the playlist is selected
+    Then an error is shown containing the name of the playlist
+    And the playlist is removed from the drop-down list
+    And all songs in the playlist are removed
+
   Scenario: Create a new playlist
     Given the user clicks the "Create Playlist" button
     And the dialog is open
