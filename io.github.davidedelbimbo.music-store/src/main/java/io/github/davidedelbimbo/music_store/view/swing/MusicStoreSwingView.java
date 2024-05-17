@@ -166,8 +166,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		btnDeletePlaylist.addActionListener(e -> {
 			// Delete selected playlist.
 			Playlist playlist = (Playlist) comboBoxPlaylists.getSelectedItem();
-			if (playlist != null)
-				musicStoreController.deletePlaylist(playlist);
+			musicStoreController.deletePlaylist(playlist);
 		});
 
 		scrollPaneSongsInStore = new JScrollPane();
@@ -292,7 +291,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// Close dialog.
 		createPlaylistDialog.setVisible(false);
 
-		// Add playlist to combo box, select it and reset error label.
+		// Add the playlist to the combo box.
 		comboBoxPlaylistsModel.addElement(playlist);
 		comboBoxPlaylists.setSelectedItem(playlist);
 		resetErrorLabel();
@@ -300,9 +299,12 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void hidePlaylist(Playlist playlist) {
+		// Remove the playlist from the combo box.
 		comboBoxPlaylistsModel.removeElement(playlist);
 		comboBoxPlaylists.setSelectedIndex(-1);
+		toggleButtons();
 		resetErrorLabel();
+		
 	}
 
 	@Override
@@ -314,7 +316,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
-	public void displayErrorAndDisplayPlaylist(String message, Playlist playlist) {
+	public void displayErrorAndAddPlaylist(String message, Playlist playlist) {
 		if (containsIgnoreCase(playlist)) {
 			// Display error in dialog.
 			createPlaylistDialog.setErrorMessage(message, playlist);
@@ -330,7 +332,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
-	public void displayErrorAndHidePlaylist(String message, Playlist playlist) {
+	public void displayErrorAndRemovePlaylist(String message, Playlist playlist) {
 		// Remove the playlist from the combo box.
 		comboBoxPlaylistsModel.removeElement(playlist);
 		comboBoxPlaylists.setSelectedIndex(-1);
@@ -341,19 +343,8 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 	}
 
 	@Override
-	public void displayErrorAndDisplaySongInPlaylist(String message, Song song, Playlist playlist) {
-		// Add the song to the playlist list.
-		if(!listSongsInPlaylistModel.contains(song)) {
-			musicStoreController.allSongsInPlaylist(playlist);
-		}
-
-		// Display error in view.
-		lblErrorMessage.setText(message + song);
-	}
-
-	@Override
-	public void displayErrorAndHideSongFromPlaylist(String message, Song song, Playlist playlist) {
-		// Remove the song from the playlist list.
+	public void displayErrorAndUpdatePlaylist(String message, Song song, Playlist playlist) {
+		// Update the playlist list.
 		musicStoreController.allSongsInPlaylist(playlist);
 
 		// Display error in view.
