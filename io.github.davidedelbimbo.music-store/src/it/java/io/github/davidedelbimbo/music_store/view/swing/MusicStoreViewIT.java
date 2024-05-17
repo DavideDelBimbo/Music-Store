@@ -185,11 +185,10 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		dialog.textBox(TXT_PLAYLIST_NAME).enterText(PLAYLIST_1_NAME);
 		dialog.button(BTN_CREATE_PLAYLIST_DIALOG).click();
 
-		// Verify that combo box is correctly updated and error message is shown.
+		// Verify that combo box is correctly updated and dialog is closed.
 		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
 			.containsExactly(existingPlaylist.toString());
-		dialog.label(LBL_ERROR_MESSAGE_DIALOG)
-			.requireText(PLAYLIST_ALREADY_EXISTS_MSG + existingPlaylist);
+		dialog.requireNotVisible();
 	}
 
 	@Test @GUITest

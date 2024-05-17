@@ -106,11 +106,6 @@ public class MusicStoreSwingViewSteps {
 		assertThat(window.comboBox().contents()).anySatisfy(e -> assertThat(e).contains(NEW_PLAYLIST_NAME));
 	}
 
-	@Then("an error is shown in dialog containing the name of the playlist")
-	public void an_error_is_shown_in_dialog_containing_the_name_of_the_playlist() {
-		assertThat(window.dialog().label("lblErrorMessage").text()).contains(NEW_PLAYLIST_NAME);
-	}
-
 	@Then("the playlist is removed from the drop-down list")
 	public void the_playlist_is_removed_from_the_drop_down_list() {
 		assertThat(window.comboBox().contents()).noneMatch(e -> e.contains(EXISTING_PLAYLIST_NAME));
