@@ -291,9 +291,16 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		// Close dialog.
 		createPlaylistDialog.setVisible(false);
 
-		// Add the playlist to the combo box.
-		comboBoxPlaylistsModel.addElement(playlist);
-		comboBoxPlaylists.setSelectedItem(playlist);
+		// Find existing playlist or add new one.
+		Playlist existingPlaylist = containsPlaylistIgnoreCase(playlist);
+		if (existingPlaylist != null) {
+			// Select the existing playlist.
+			comboBoxPlaylists.setSelectedItem(existingPlaylist);
+		} else {
+			// Add the playlist to the combo box and select it.
+			comboBoxPlaylistsModel.addElement(playlist);
+			comboBoxPlaylists.setSelectedItem(playlist);
+		}
 		resetErrorLabel();
 	}
 
@@ -315,7 +322,7 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 
 	@Override
 	public void displayErrorAndAddPlaylist(String message, Playlist playlist) {
-		if (containsIgnoreCase(playlist)) {
+		if (containsPlaylistIgnoreCase(playlist) != null) {
 			// Display error in dialog.
 			createPlaylistDialog.setErrorMessage(message, playlist);
 		} else {
@@ -365,9 +372,11 @@ public class MusicStoreSwingView extends JFrame implements MusicStoreView {
 		btnRemoveFromPlaylist.setEnabled(isPlaylistSelected && isSongInPlaylistSelected);
 	}
 
-	private boolean containsIgnoreCase(Playlist playlist) {
+	private Playlist containsPlaylistIgnoreCase(Playlist playlist) {
 		return IntStream.range(0, comboBoxPlaylistsModel.getSize())
 			.mapToObj(comboBoxPlaylistsModel::getElementAt)
-			.anyMatch(existingPlaylist -> existingPlaylist.getName().equalsIgnoreCase(playlist.getName()));
+			.filter(existingPlaylist -> existingPlaylist.getName().equalsIgnoreCase(playlist.getName()))
+			.findFirst()
+			.orElse(null);
 	}
 }
