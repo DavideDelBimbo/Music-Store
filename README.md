@@ -16,20 +16,23 @@ This application is developed in Java 8, following to TDD and BDD practices. It 
 - **Code Quality**: SonarCloud
 - **Containerization**: Docker
 - **CI Server**: GitHub Actions
+
 The application is tested with GitHub Actions on Java 8, Java 11 and Java 17. Maven is used for the entire build process and dependency management. The GUI has been developed with Swing and the application uses a MongoDB database.
 
 ## Usage
-From the directory containing `pom.xml` (i.e `cd Music-Store\io.github.davidedelbimbo.music-store), you can build the application and run all tests with the following Maven command:
+From the directory containing `pom.xml` (i.e `cd Music-Store\io.github.davidedelbimbo.music-store`), you can build the application and run all tests with the following Maven command:
 ```sh
 mvn clean verify
 ```
 You can use two specific profiles for enhanced testing:
 - **Code Coverage**: `jacoco`.
 - **Mutation Testing**: `pitest`.
+
 Moreover, you can skip specific tests using the variables:
 - **Unit Tests**: `skipUT`.
 - **Integration Tests**: `skipIT`
 - **BDD Tests**: `skipBDD`.
+
 For example, to include both Code Coverage and Mutation Testing analysis and skip BDD testing, you can run:
 ```sh
 mvn clean verify -Pjacoco,pitest -DskipBDD=true
