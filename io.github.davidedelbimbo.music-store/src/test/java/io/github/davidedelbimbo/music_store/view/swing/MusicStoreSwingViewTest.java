@@ -220,7 +220,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testDisplayPlaylistShouldCloseDialogAndAddPlaylistToComboBoxAndResetTheErrorLabel() {
+	public void testDisplayPlaylistWhenComboBoxDoesNotContainPlaylistShouldCloseDialogAndAddPlaylistToComboBoxAndResetTheErrorLabel() {
 		Playlist playlistToAdd = new Playlist(PLAYLIST_2_NAME);
 		Playlist existingPlaylist = new Playlist(PLAYLIST_1_NAME);
 		GuiActionRunner.execute(() -> 
@@ -228,13 +228,37 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.displayPlaylist(playlistToAdd));
-
+ 
 		// Verify that dialog is closed.
 		verify(createPlaylistDialog).setVisible(false);
 
 		// Verify that playlist is displayed in the combo box.
 		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
 		assertThat(comboBoxContents).containsExactly(existingPlaylist.toString(), playlistToAdd.toString());
+
+		// Verify that playlist is selected in the combo box.
+		window.comboBox(COMBO_BOX_PLAYLISTS).requireSelection(playlistToAdd.toString());
+
+		// Verify that error message is reset.
+		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(" ");
+	}
+
+	@Test @GUITest
+	public void testDisplayPlaylistWhenComboBoxContainsPlaylistShouldCloseDialogAndAddPlaylistToComboBoxAndResetTheErrorLabel() {
+		Playlist playlistToAdd = new Playlist(PLAYLIST_1_NAME.toLowerCase());
+
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(playlistToAdd));
+
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.displayPlaylist(new Playlist(PLAYLIST_1_NAME)));
+
+		// Verify that dialog is closed.
+		verify(createPlaylistDialog).setVisible(false);
+
+		// Verify that playlist is displayed in the combo box.
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).containsExactly(playlistToAdd.toString());
 
 		// Verify that playlist is selected in the combo box.
 		window.comboBox(COMBO_BOX_PLAYLISTS).requireSelection(playlistToAdd.toString());
