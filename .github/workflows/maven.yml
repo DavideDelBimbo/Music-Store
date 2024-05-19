@@ -7,6 +7,9 @@ on:
     paths-ignore:
       - '**/.github/workflows/**'
       - '**/.gitignore'
+      - '**/README.md'
+      - '**/LICENSE'
+      - '**.pdf'
   pull_request:
 
 jobs:
