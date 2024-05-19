@@ -389,7 +389,6 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_2_NAME, songs));
 		});
-			
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_2_NAME);
 
