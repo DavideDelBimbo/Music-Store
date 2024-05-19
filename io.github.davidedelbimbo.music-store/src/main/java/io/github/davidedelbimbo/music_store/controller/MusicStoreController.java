@@ -33,8 +33,9 @@ public class MusicStoreController {
 
 	public void createPlaylist(Playlist playlist) {
 		// Check if playlist already exists.
-		if (Boolean.TRUE.equals(isPlaylistExists(playlist))) {
-			musicStoreView.displayErrorAndAddPlaylist(PLAYLIST_ALREADY_EXISTS_MSG, playlist);
+		Playlist existingPlaylist = musicStoreRepository.findPlaylistByName(playlist.getName());
+		if (existingPlaylist != null) {
+			musicStoreView.displayErrorAndAddPlaylist(PLAYLIST_ALREADY_EXISTS_MSG, existingPlaylist);
 			return;
 		}
 
@@ -45,7 +46,7 @@ public class MusicStoreController {
 
 	public void deletePlaylist(Playlist playlist) {
 		// Check if playlist exists.
-		if (Boolean.FALSE.equals(isPlaylistExists(playlist))) {
+		if (musicStoreRepository.findPlaylistByName(playlist.getName()) == null) {
 			musicStoreView.displayErrorAndRemovePlaylist(PLAYLIST_NOT_FOUND_MSG, playlist);
 			return;
 		}
@@ -105,11 +106,5 @@ public class MusicStoreController {
 		playlistToUpdate.removeSong(song);
 		musicStoreRepository.updatePlaylist(playlistToUpdate);
 		musicStoreView.displayAllSongsInPlaylist(playlistToUpdate.getSongs());
-	}
-
-
-	// Helper methods.
-	public Boolean isPlaylistExists(Playlist playlist) {
-		return musicStoreRepository.findPlaylistByName(playlist.getName()) != null;
 	}
 }

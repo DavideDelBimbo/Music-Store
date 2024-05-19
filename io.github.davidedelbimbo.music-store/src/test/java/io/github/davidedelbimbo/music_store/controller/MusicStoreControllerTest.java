@@ -79,7 +79,7 @@ public class MusicStoreControllerTest {
 		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.createPlaylist(playlistToCreate);
 
-		verify(musicStoreView).displayErrorAndAddPlaylist(PLAYLIST_ALREADY_EXISTS_MSG, playlistToCreate);
+		verify(musicStoreView).displayErrorAndAddPlaylist(PLAYLIST_ALREADY_EXISTS_MSG, existingPlaylist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
