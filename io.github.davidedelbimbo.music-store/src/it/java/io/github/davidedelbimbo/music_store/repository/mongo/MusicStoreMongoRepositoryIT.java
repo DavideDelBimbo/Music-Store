@@ -152,7 +152,8 @@ public class MusicStoreMongoRepositoryIT {
 		Playlist playlistToFind = new Playlist(PLAYLIST_2_NAME, Arrays.asList(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
 		addTestPlaylistToDatabase(playlistToFind);
 
-		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toLowerCase())).isEqualTo(playlistToFind);
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toLowerCase()))
+			.isEqualTo(playlistToFind);
 		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toUpperCase()).getSongs())
 			.containsExactly(new Song(SONG_1_TITLE, SONG_1_ARTIST));
 	}
@@ -187,7 +188,6 @@ public class MusicStoreMongoRepositoryIT {
 	@Test
 	public void testDeletePlaylist() {
 		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
-
 		addTestPlaylistToDatabase(playlistToDelete);
 
 		musicStoreRepository.deletePlaylist(playlistToDelete);
