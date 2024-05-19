@@ -152,7 +152,8 @@ public class MusicStoreMongoRepositoryIT {
 		Playlist playlistToFind = new Playlist(PLAYLIST_2_NAME, Arrays.asList(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
 		addTestPlaylistToDatabase(playlistToFind);
 
-		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toLowerCase())).isEqualTo(playlistToFind);
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toLowerCase()))
+			.isEqualTo(playlistToFind);
 		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_2_NAME.toUpperCase()).getSongs())
 			.containsExactly(new Song(SONG_1_TITLE, SONG_1_ARTIST));
 	}
@@ -185,12 +186,37 @@ public class MusicStoreMongoRepositoryIT {
 	}
 
 	@Test
+	public void testUpdatePlaylistWithNoSensitiveCase() {
+		Playlist playlistToUpdate = new Playlist(PLAYLIST_1_NAME, Arrays.asList(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
+		addTestPlaylistToDatabase(playlistToUpdate);
+
+		Playlist playlistUpdated = new Playlist(PLAYLIST_1_NAME.toLowerCase(), Arrays.asList(new Song(SONG_2_TITLE, SONG_2_ARTIST)));
+
+		musicStoreRepository.updatePlaylist(playlistUpdated);
+
+		assertThat(readAllPlaylistsFromDatabase())
+			.containsExactly(playlistUpdated);
+		assertThat(readAllPlaylistsFromDatabase().get(0).getSongs())
+				.containsExactly(new Song(SONG_2_TITLE, SONG_2_ARTIST));
+	}
+
+	@Test
 	public void testDeletePlaylist() {
 		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
-
 		addTestPlaylistToDatabase(playlistToDelete);
 
 		musicStoreRepository.deletePlaylist(playlistToDelete);
+
+		assertThat(readAllPlaylistsFromDatabase())
+			.isEmpty();
+	}
+
+	@Test
+	public void testDeletePlaylistWithNoSensitiveCase() {
+		Playlist playlistToDelete = new Playlist(PLAYLIST_1_NAME);
+		addTestPlaylistToDatabase(playlistToDelete);
+
+		musicStoreRepository.deletePlaylist(new Playlist(PLAYLIST_1_NAME.toLowerCase()));
 
 		assertThat(readAllPlaylistsFromDatabase())
 			.isEmpty();

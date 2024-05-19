@@ -77,12 +77,14 @@ public class MusicStoreMongoRepository implements MusicStoreRepository {
 
 	@Override
 	public void updatePlaylist(Playlist playlist) {
-		this.playlistCollection.replaceOne(Filters.eq(PLAYLIST_NAME_FIELD, playlist.getName()), fromPlaylistToDocument(playlist));
+		Pattern pattern = Pattern.compile("^" + playlist.getName() + "$", Pattern.CASE_INSENSITIVE);
+		this.playlistCollection.replaceOne(Filters.eq(PLAYLIST_NAME_FIELD, pattern), fromPlaylistToDocument(playlist));
 	}
 
 	@Override
 	public void deletePlaylist(Playlist playlist) {
-		this.playlistCollection.deleteOne(Filters.eq(PLAYLIST_NAME_FIELD, playlist.getName()));
+		Pattern pattern = Pattern.compile("^" + playlist.getName() + "$", Pattern.CASE_INSENSITIVE);
+		this.playlistCollection.deleteOne(Filters.eq(PLAYLIST_NAME_FIELD, pattern));
 	}
 
 

@@ -95,7 +95,8 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 		window.button(BTN_DELETE_PLAYLIST).click();
 
 		// Verify that playlist is deleted from the database.
-		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_NAME)).isNull();
+		assertThat(musicStoreRepository.findPlaylistByName(PLAYLIST_NAME))
+			.isNull();
 	}
 
 	@Test @GUITest

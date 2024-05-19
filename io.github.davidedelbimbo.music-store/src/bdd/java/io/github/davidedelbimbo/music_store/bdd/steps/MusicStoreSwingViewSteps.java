@@ -85,6 +85,7 @@ public class MusicStoreSwingViewSteps {
 		window.list("listSongsInPlaylist").selectItem(Pattern.compile(".*" + SONG_2_TITLE + ".*"));
 	}
 
+
 	@When("the playlist is selected")
 	public void the_playlist_is_selected() {
 		window.comboBox().selectItem(Pattern.compile(".*" + EXISTING_PLAYLIST_NAME + ".*"));

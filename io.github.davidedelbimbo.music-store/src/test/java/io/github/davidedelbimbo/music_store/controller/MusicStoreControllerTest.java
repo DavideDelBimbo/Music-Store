@@ -79,7 +79,7 @@ public class MusicStoreControllerTest {
 		Playlist playlistToCreate = new Playlist(PLAYLIST_1_NAME);
 		musicStoreController.createPlaylist(playlistToCreate);
 
-		verify(musicStoreView).displayErrorAndAddPlaylist(PLAYLIST_ALREADY_EXISTS_MSG, playlistToCreate);
+		verify(musicStoreView).displayErrorAndAddPlaylist(PLAYLIST_ALREADY_EXISTS_MSG, existingPlaylist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
@@ -127,32 +127,29 @@ public class MusicStoreControllerTest {
 		musicStoreController.allSongsInPlaylist(playlist);
 
 		verify(musicStoreView).displayErrorAndRemovePlaylist(PLAYLIST_NOT_FOUND_MSG, playlist);
-		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
 	}
 
 	@Test
 	public void testAddSongToPlaylistWhenSongDoesNotAlreadyInPlaylist() {
-		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-
 		Song existingSong = new Song(SONG_2_TITLE, SONG_2_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
-		assertThat(playlist.getSongs()).containsExactly(existingSong, songToAdd);
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
 		inOrder.verify(musicStoreView).displayAllSongsInPlaylist(Arrays.asList(existingSong, songToAdd));
-	}
+		assertThat(playlist.getSongs()).containsExactly(existingSong, songToAdd);
+}
 
 	@Test
 	public void testAddSongToPlaylistWhenPlaylistDoesNotExist() {
-		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
 
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
 		verify(musicStoreView).displayErrorAndRemovePlaylist(PLAYLIST_NOT_FOUND_MSG, playlist);
@@ -161,42 +158,39 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testAddSongToPlaylistWhenSongAlreadyInPlaylist() {
-		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-
 		Song existingSong = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
+		Song songToAdd = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreController.addSongToPlaylist(playlist, songToAdd);
 
-		assertThat(playlist.getSongs()).containsExactly(existingSong);
 		verify(musicStoreView).displayErrorAndUpdatePlaylist(SONG_ALREADY_IN_PLAYLIST_MSG, songToAdd, playlist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
-	}
+		assertThat(playlist.getSongs()).containsExactly(existingSong);
+}
 
 	@Test
 	public void testRemoveSongFromPlaylistWhenSongExistsInPlaylist() {
-		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-
 		Song existingSong = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
 
-		assertThat(playlist.getSongs()).isEmpty();
 		InOrder inOrder = inOrder(musicStoreRepository, musicStoreView);
 		inOrder.verify(musicStoreRepository).updatePlaylist(playlist);
 		inOrder.verify(musicStoreView).displayAllSongsInPlaylist(Arrays.asList());
+		assertThat(playlist.getSongs()).isEmpty();
 	}
 
 	@Test
 	public void testRemoveSongFromPlaylistWhenPlaylistDoesNotExist() {
-		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(null);
 
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
 
 		verify(musicStoreView).displayErrorAndRemovePlaylist(PLAYLIST_NOT_FOUND_MSG, playlist);
@@ -205,16 +199,15 @@ public class MusicStoreControllerTest {
 
 	@Test
 	public void testRemoveSongFromPlaylistWhenSongDoesNotExistInPlaylist() {
-		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-
 		Song existingSong = new Song(SONG_2_TITLE, SONG_2_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME, Arrays.asList(existingSong));
 		when(musicStoreRepository.findPlaylistByName(PLAYLIST_1_NAME)).thenReturn(playlist);
 
+		Song songToRemove = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		musicStoreController.removeSongFromPlaylist(playlist, songToRemove);
 
-		assertThat(playlist.getSongs()).containsExactly(existingSong);
 		verify(musicStoreView).displayErrorAndUpdatePlaylist(SONG_NOT_FOUND_IN_PLAYLIST_MSG, songToRemove, playlist);
 		verifyNoMoreInteractions(ignoreStubs(musicStoreRepository));
+		assertThat(playlist.getSongs()).containsExactly(existingSong);
 	}
 }

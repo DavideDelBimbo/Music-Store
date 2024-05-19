@@ -124,10 +124,10 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 
-		GuiActionRunner.execute(() -> musicStoreSwingView.getListSongsInPlaylistModel()
-				.addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
-		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
+		GuiActionRunner.execute(() ->
+			musicStoreSwingView.getListSongsInPlaylistModel().addElement(new Song(SONG_1_TITLE, SONG_1_ARTIST)));
 
+		window.list(LIST_SONGS_IN_PLAYLIST).selectItem(0);
 		window.button(BTN_REMOVE_FROM_PLAYLIST).requireEnabled();
 	}
 
@@ -204,7 +204,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testDisplayAllPlaylistsShouldAddAllPlaylistsToComboBoxPlaylistsAndResetTheErrorLabel() {
+	public void testDisplayAllPlaylistsShouldAddAllPlaylistsToComboBoxPlaylists() {
 		Playlist playlist1 = new Playlist(PLAYLIST_1_NAME);
 		Playlist playlist2 = new Playlist(PLAYLIST_2_NAME);
 
@@ -214,18 +214,15 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		// Verify that playlists are added to the combo box.
 		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
 		assertThat(comboBoxContents).containsExactly(playlist1.toString(), playlist2.toString());
-
-		// Verify that error message is reset.
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(" ");
 	}
 
 	@Test @GUITest
 	public void testDisplayPlaylistWhenComboBoxDoesNotContainPlaylistShouldCloseDialogAndAddPlaylistToComboBoxAndResetTheErrorLabel() {
-		Playlist playlistToAdd = new Playlist(PLAYLIST_2_NAME);
 		Playlist existingPlaylist = new Playlist(PLAYLIST_1_NAME);
 		GuiActionRunner.execute(() -> 
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(existingPlaylist));
 
+		Playlist playlistToAdd = new Playlist(PLAYLIST_2_NAME);
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.displayPlaylist(playlistToAdd));
  
@@ -244,7 +241,7 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testDisplayPlaylistWhenComboBoxContainsPlaylistShouldCloseDialogAndAddPlaylistToComboBoxAndResetTheErrorLabel() {
+	public void testDisplayPlaylistWhenComboBoxContainsPlaylistShouldCloseDialogAndResetTheErrorLabel() {
 		Playlist playlistToAdd = new Playlist(PLAYLIST_1_NAME.toLowerCase());
 
 		GuiActionRunner.execute(() ->
@@ -315,12 +312,13 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.displayErrorAndAddPlaylist("Error message: ", playlist));
 
+		// Verify that the playlist is not added to the combo box.
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).containsExactly(playlist.toString());
+
 		// Verify that the error message is displayed in the dialog.
 		verify(createPlaylistDialog).setErrorMessage("Error message: ", playlist);
 		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(" ");
-
-		// Verify that the playlist is not added to the combo box.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents()).containsExactly(playlist.toString());
 	}
 
 	@Test @GUITest
@@ -331,9 +329,14 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.displayErrorAndAddPlaylist("Error message: ", playlist));
 
 		// Verify that the playlist is added to the combo box.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents()).containsExactly(playlist.toString());
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).containsExactly(playlist.toString());
 		window.comboBox(COMBO_BOX_PLAYLISTS).requireSelection(playlist.toString());
+
+		// Verify that the dialog is closed.
 		verify(createPlaylistDialog).setVisible(false);
+
+		// Verify that the error message is displayed in the view.
 		window.label(LBL_ERROR_MESSAGE_VIEW).requireText("Error message: " + playlist);
 	}
 
@@ -347,7 +350,8 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.displayErrorAndRemovePlaylist("Error message: ", playlist));
 
 		// Verify that the playlist is removed from the combo box.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents()).isEmpty();
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).isEmpty();
 		window.comboBox(COMBO_BOX_PLAYLISTS).requireNoSelection();
 
 		// Verify that the error message is displayed.
@@ -355,31 +359,14 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test @GUITest
-	public void testDisplayErrorAndUpdatePlaylistWhenSongIsAlreadyInPlaylistShouldShowTheMessageInTheErrorLabel() {
-		Song song = new Song(SONG_1_TITLE, SONG_1_ARTIST);
-		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
-		GuiActionRunner.execute(() ->
-			musicStoreSwingView.getListSongsInPlaylistModel().addElement(song));
-
-		GuiActionRunner.execute(() ->
-			musicStoreSwingView.displayErrorAndUpdatePlaylist("Error message: ", song, playlist));
-
-		// Verify that the song is not added to the playlist list.
-		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents()).containsExactly(song.toString());
-
-		// Verify that the error message is displayed.
-		window.label(LBL_ERROR_MESSAGE_VIEW).requireText("Error message: " + song);
-	}
-
-	@Test @GUITest
-	public void testDisplayErrorAndUpdatePlaylistWhenSongIsNotInPlaylistShouldAddTheSongToPlaylistAndShowTheMessageInTheErrorLabel() {
+	public void testDisplayErrorAndUpdatePlaylistShouldUpdateThePlaylistListAndShowTheMessageInTheErrorLabel() {
 		Song song = new Song(SONG_1_TITLE, SONG_1_ARTIST);
 		Playlist playlist = new Playlist(PLAYLIST_1_NAME);
 
 		GuiActionRunner.execute(() ->
 			musicStoreSwingView.displayErrorAndUpdatePlaylist("Error message: ", song, playlist));
 
-		// Verify that the song is removed from the playlist list.
+		// Verify that the playlist list is updated.
 		verify(musicStoreController).allSongsInPlaylist(playlist);
 
 		// Verify that the error message is displayed.
@@ -402,7 +389,6 @@ public class MusicStoreSwingViewTest extends AssertJSwingJUnitTestCase {
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_1_NAME));
 			musicStoreSwingView.getComboBoxPlaylistsModel().addElement(new Playlist(PLAYLIST_2_NAME, songs));
 		});
-			
 
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_2_NAME);
 

@@ -109,8 +109,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 			musicStoreController.allSongs());
 
 		// Verify that store list is populated.
-		assertThat(window.list(LIST_SONGS_IN_STORE).contents())
-			.containsExactly(song1.toString(), song2.toString());
+		String[] listContents = window.list(LIST_SONGS_IN_STORE).contents();
+		assertThat(listContents).containsExactly(song1.toString(), song2.toString());
 	}
 
 	@Test @GUITest
@@ -124,8 +124,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 			musicStoreController.allPlaylists());
 
 		// Verify that playlist combo box is populated.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.containsExactly(playlist1.toString(), playlist2.toString());
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).containsExactly(playlist1.toString(), playlist2.toString());
 	}
 
 	@Test @GUITest
@@ -139,10 +139,10 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 
 		// Verify that the list of songs in the playlist is populated.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.containsExactly(playlistToShow.toString());
-		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
-			.containsExactly(songToShow.toString());
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
+		assertThat(comboBoxContents).containsExactly(playlistToShow.toString());
+		assertThat(listContents).containsExactly(songToShow.toString());
 	}
 
 	@Test @GUITest
@@ -154,10 +154,10 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.comboBox(COMBO_BOX_PLAYLISTS).selectItem(PLAYLIST_1_NAME);
 
 		// Verify that the combo box is correctly updated and error message is shown.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.isEmpty();
-		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
-			.isEmpty();
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
+		assertThat(comboBoxContents).isEmpty();
+		assertThat(listContents).isEmpty();
 		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(PLAYLIST_NOT_FOUND_MSG + playlistToHide);
 	}
 
@@ -170,8 +170,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		dialog.button(BTN_CREATE_PLAYLIST_DIALOG).click();
 
 		// Verify that the playlist is created.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.containsExactly(PLAYLIST_1_NAME);
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).containsExactly(PLAYLIST_1_NAME);
 	}
 
 	@Test @GUITest
@@ -188,8 +188,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		dialog.button(BTN_CREATE_PLAYLIST_DIALOG).click();
 
 		// Verify that combo box is correctly updated and error message is shown.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.containsExactly(existingPlaylist.toString());
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).containsExactly(existingPlaylist.toString());
 		dialog.label(LBL_ERROR_MESSAGE_DIALOG).requireText(PLAYLIST_ALREADY_EXISTS_MSG + PLAYLIST_1_NAME);
 	}
 
@@ -205,8 +205,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.button(BTN_DELETE_PLAYLIST).click();
 
 		// Verify that playlist is deleted.
-		assertThat(window.comboBox(COMBO_BOX_PLAYLISTS).contents())
-			.isEmpty();
+		String[] comboBoxContents = window.comboBox(COMBO_BOX_PLAYLISTS).contents();
+		assertThat(comboBoxContents).isEmpty();
 	}
 
 	@Test @GUITest
@@ -227,8 +227,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.button(BTN_ADD_TO_PLAYLIST).click();
 
 		// Verify that song is added to playlist.
-		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
-			.containsExactly(songToAdd.toString());
+		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
+		assertThat(listContents).containsExactly(songToAdd.toString());
 	}
 
 	@Test @GUITest
@@ -249,8 +249,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.button(BTN_ADD_TO_PLAYLIST).click();
 
 		// Verify that playlist list is correctly updated and error message is shown.
-		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
-			.containsExactly(songToAdd.toString());
+		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
+		assertThat(listContents).containsExactly(songToAdd.toString());
 		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_ALREADY_IN_PLAYLIST_MSG + songToAdd);
 	}
 
@@ -268,7 +268,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.button(BTN_REMOVE_FROM_PLAYLIST).click();
 
 		// Verify that song is removed from playlist.
-		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents()).isEmpty();
+		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
+		assertThat(listContents).isEmpty();
 	}
 
 	@Test @GUITest
@@ -290,8 +291,8 @@ public class MusicStoreViewIT extends AssertJSwingJUnitTestCase {
 		window.button(BTN_REMOVE_FROM_PLAYLIST).click();
 
 		// Verify that playlist list is correctly updated and error message is shown.
-		assertThat(window.list(LIST_SONGS_IN_PLAYLIST).contents())
-			.isEmpty();
+		String[] listContents = window.list(LIST_SONGS_IN_PLAYLIST).contents();
+		assertThat(listContents).isEmpty();
 		window.label(LBL_ERROR_MESSAGE_VIEW).requireText(SONG_NOT_FOUND_IN_PLAYLIST_MSG + songToRemove);
 	}
 }
